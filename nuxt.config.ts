@@ -11,6 +11,8 @@ export default defineNuxtConfig({
         '@vite-pwa/nuxt',
         '@element-plus/nuxt',
         'nuxt-particles',
+        "@nuxtjs/i18n",
+        'nuxt-swiper'
     ],
 
     experimental: {
@@ -122,4 +124,43 @@ export default defineNuxtConfig({
     },
 
     compatibilityDate: '2024-07-03',
+    i18n: {
+        // locale: 'cn',
+        locales: [
+            {
+                code: 'cn',
+                name: '简体中文',
+                file: 'cn.json',
+            },
+            {
+                code: 'en',
+                name: 'English',
+                file: 'en.json',
+            },
+
+            // {
+            //   code: 'fr',
+            //   file: 'fr-FR.ts'
+            // }
+        ],
+        lazy: true,
+        langDir: 'lang',
+        defaultLocale: 'cn', // default locale of your project for Nuxt pages and routings
+        // strategy: 'prefix_except_default',
+        detectBrowserLanguage: false,
+        // detectBrowserLanguage: {
+        //     useCookie: true,
+        //     cookieKey: 'i18n_redirected',
+        //     redirectOn: 'root', // recommended
+        //     // alwaysRedirect: false,
+        //     // fallbackLocale: 'cn',
+        // },
+
+        // customRoutes: 'page',
+        // pages: {
+        //     login: {
+        //         en: false,
+        //     },
+        // },
+    },
 })

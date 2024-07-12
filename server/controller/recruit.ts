@@ -1,6 +1,6 @@
 import type { Prisma } from '@prisma/client'
-import type { H3Event } from 'h3'
-import { ResponseMessage } from '~/config/message'
+// import type { H3Event } from 'h3'
+// import { ResponseMessage } from '~/config/message'
 
 // news
 type FindListQueryParam = {
@@ -13,13 +13,13 @@ type FindListQueryParam = {
  * @param event
  * @returns
  */
-export const getList = async (event: H3Event) => {
-    const url = getRequestURL(event)
-    // /api/page**的接口，跳过登录校验
-    if (!url.pathname.includes('/api/page')) {
-        // 接口校验(是否登录)
-        if (!event.context.user) return ResponseMessage.token
-    }
+export const getRecruitList = defineEventHandler(async event => {
+    // const url = getRequestURL(event)
+    // // /api/page**的接口，跳过登录校验
+    // if (!url.pathname.includes('/api/page')) {
+    //     // 接口校验(是否登录)
+    //     if (!event.context.user) return ResponseMessage.token
+    // }
 
     // 获取参数
     const param = await getEventParams<FindListQueryParam>(event)
@@ -77,16 +77,16 @@ export const getList = async (event: H3Event) => {
     } else {
         return { code: 400, message: '查询失败' }
     }
-}
+})
 
 /**
  * 新增
  * @param event
  * @returns
  */
-export const insert = async (event: H3Event) => {
+export const setRecruitCreate = defineEventHandler(async event=> {
     // 接口校验(是否登录)
-    if (!event.context.user) return ResponseMessage.token
+    // if (!event.context.user) return ResponseMessage.token
 
     // 获取参数
     const param = await getEventParams<Prisma.RecruitCreateInput>(event)
@@ -104,16 +104,16 @@ export const insert = async (event: H3Event) => {
     } else {
         return { msg: '网络错误' }
     }
-}
+})
 
 /**
  * 修改
  * @param event
  * @returns
  */
-export const update = async (event: H3Event) => {
+export const setRecruitUpdate = defineEventHandler(async event => {
     // 接口校验(是否登录)
-    if (!event.context.user) return ResponseMessage.token
+    // if (!event.context.user) return ResponseMessage.token
 
     // 获取参数
     const param = await getEventParams<Prisma.RecruitUncheckedUpdateInput>(event)
@@ -135,16 +135,16 @@ export const update = async (event: H3Event) => {
     } else {
         return { msg: '网络错误' }
     }
-}
+})
 
 /**
  * 删除
  * @param event
  * @returns
  */
-export const del = async (event: H3Event) => {
+export const setRecruitDelete =defineEventHandler( async event => {
     // 接口校验(是否登录)
-    if (!event.context.user) return ResponseMessage.token
+    // if (!event.context.user) return ResponseMessage.token
 
     // 获取参数
     const param = await getEventParams<{ id: number }>(event)
@@ -162,4 +162,4 @@ export const del = async (event: H3Event) => {
     } else {
         return { msg: '网络错误' }
     }
-}
+})

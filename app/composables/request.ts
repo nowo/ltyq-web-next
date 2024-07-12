@@ -14,7 +14,7 @@ interface ResponseDataType<T> {
  * @param options   请求配置
  * @returns useFetch
  */
-export async function useCustomFetch<T>(url: NitroFetchRequest, options: UseFetchOptions<ResponseDataType<T>> = {}) {
+export async function useCustomFetch<T=any>(url: NitroFetchRequest, options: UseFetchOptions<ResponseDataType<T>> = {}) {
     const time = Date.now().toString()
     const sign = await setSignRule(time)
     const headers: HeadersInit = { 'x-sign': `${sign}-${time}` }
@@ -39,7 +39,7 @@ export async function useCustomFetch<T>(url: NitroFetchRequest, options: UseFetc
     // for nice deep defaults, please use unjs/defu
     const params = defu(options, defaults)
 
-    return useFetch(url, params)
+    return useFetch<ResponseDataType<T>>(url, params)
 }
 
 /**

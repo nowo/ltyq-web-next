@@ -10,7 +10,9 @@ export const getMenuList = defineEventHandler(async (event) => {
     // 获取参数
     const param = await getEventParams<Prisma.MenuCreateInput & IListPage>(event)
 
-    const where: Prisma.MenuWhereInput = {}
+    const where: Prisma.MenuWhereInput = {
+        p_id:0
+    }
 
     if (param?.title) {
         where.title = {
@@ -42,7 +44,7 @@ export const getMenuList = defineEventHandler(async (event) => {
             take: pageSize,
             where,
             orderBy: {
-                id: 'asc', // 按id正序排序
+                sort: 'asc', // 按id正序排序
             },
             include: {
                 children: true,

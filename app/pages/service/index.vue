@@ -44,6 +44,7 @@
 </template>
 
 <script lang="ts" setup>
+import {formatTime} from '@cooj/utils'
 const { $lang } = useNuxtApp()
 
 definePageMeta({

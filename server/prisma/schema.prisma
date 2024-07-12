@@ -44,6 +44,8 @@ model Menu {
     title_en String? @db.VarChar(100)
     href     String? @db.VarChar(200)
     status    Int?    @default(1)
+    is_goods Boolean @default(false)
+    img String? @db.VarChar(255)
 
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
@@ -110,6 +112,7 @@ model Product {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
     upload     Upload[]
+    classify Classify[]
 }
 
 model System {
@@ -175,3 +178,66 @@ model Upload {
 
 //     @@id([product_id, link_id, news_id, other_id])
 // }
+
+
+
+model Recruit {
+    id         Int     @id @default(autoincrement())
+    title      String  @db.VarChar(100)
+    title_en   String  @db.VarChar(100)
+    people     String? @db.VarChar(200)
+    address    String? @db.VarChar(200)
+    address_en String? @db.VarChar(200)
+
+    describe    String?  @db.Text
+    describe_en String?  @db.Text
+    content     String?  @db.Text
+    content_en  String?  @db.Text
+    sort        Int?     @default(0)
+    is_open     Boolean? @default(true)
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("recruit")
+}
+
+
+
+model Classify {
+    id       Int     @id @default(autoincrement())
+    p_id     Int?    @default(0)
+    title    String? @db.VarChar(100)
+    title_en String? @db.VarChar(100)
+
+    // img        String?  @db.VarChar(255)
+    // content    String?  @db.Text
+    // content_en String?  @db.Text
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    sort   Int? @default(0)
+    status Int? @default(1)
+    type   Int? @default(1)
+
+    parent   Classify?  @relation("ChildToParent", fields: [p_id], references: [id])
+    children Classify[] @relation("ChildToParent")
+
+    product Product[] // 这里需要定义成一对多的关系，因为一个分类下可以有多个产品
+
+    @@map("classify")
+}
+
+model Message {
+    id        Int      @id @default(autoincrement())
+    title     String   @db.VarChar(100)
+    phone     String?  @db.VarChar(100)
+    email     String?  @db.VarChar(100)
+    address   String?  @db.VarChar(200)
+    content   String?  @db.Text
+    status    Int?     @default(0)
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("message")
+}

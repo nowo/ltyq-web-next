@@ -90,7 +90,7 @@ import type { Prisma } from '@prisma/client'
 definePageMeta({
     layout: 'home',
 })
-const systemInfo = await useSystemState().getSystemInfo()
+const {systemInfo} = await useSystemState()
 const { data } = await useCustomFetch<Prisma.OtherMaxAggregateOutputType>('/api/page/other', {
     params: {
         type: 'recruit-person',

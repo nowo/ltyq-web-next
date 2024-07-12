@@ -75,10 +75,10 @@
 definePageMeta({
     layout: 'home',
 })
-const systemInfo = await useSystemState().getSystemInfo()
+const {systemInfo} = await useSystemState()
 
 onMounted(() => {
-    initMap('map_box', systemInfo.value?.company, systemInfo.value?.address)
+    // initMap('map_box', systemInfo.value?.company, systemInfo.value?.address)
 })
 </script>
 

@@ -81,6 +81,7 @@
 <script lang="ts" setup>
 import type { ThumbsOptions } from 'swiper/types'
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules'
+import {formatTime} from '@cooj/utils'
 
 definePageMeta({
     layout: 'home',
@@ -103,7 +104,7 @@ const setThumbsSwiper = (swiper: ThumbsOptions['swiper']) => {
     thumbsSwiper.value = swiper
 }
 
-const systemState = await useSystemState().getSystemInfo()
+const {systemInfo} = await useSystemState()
 
 const id = useRouteParam('id')
 const { data } = await useCustomFetch<Record<'nextNews' | 'prevNews' | 'data', IGoodsGetListItem>>('/api/page/product/detail', {
@@ -146,7 +147,7 @@ const contentData = computed(() => {
     ]
 })
 useHead({
-    title: `${systemState.value?.title} - ${product?.title}`,
+    title: `${systemInfo.value?.title} - ${product?.title}`,
     // meta: [
     //     {
     //         name: 'description',

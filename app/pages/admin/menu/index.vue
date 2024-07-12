@@ -55,7 +55,7 @@ const rules = reactive<FormRules>({
 const tableData = reactive<CoTableProps<Menu>>({
     data: [],
     tableHeader: [
-        { property: 'id', label: 'id', width: '50' },
+        { property: 'id', label: 'id', width: '100' },
 
         { property: 'title', label: '标题名称', minWidth: '180' },
         { property: 'title_en', label: '标题名称(英文)', minWidth: '180' },
@@ -63,7 +63,7 @@ const tableData = reactive<CoTableProps<Menu>>({
         // { property: 'icon', label: '图标', width: '100' },
         { property: 'sort', label: '排序', width: '100' },
         // { property: 'p_id', label: '父级id', width: '100' },
-        { property: 'status', label: '是否隐藏', width: '100', align: 'center' },
+        { property: 'status', label: '显示/隐藏', width: '100', align: 'center' },
         { property: 'created_at', label: '创建时间', width: '220' },
         { property: 'operate', label: '操作', width: '120', align: 'center', fixed: 'right' },
 
@@ -157,7 +157,7 @@ initTableData()
                 新增菜单
             </el-button>
         </CoFormTool>
-        <CoTable v-model:option="tableData" auto-height border @refresh="initTableData">
+        <CoTable v-model:option="tableData" row-key="id" auto-height border @refresh="initTableData">
             <template #status="{ row }">
                 <el-tag v-if="row.status" type="primary">
                     显示
