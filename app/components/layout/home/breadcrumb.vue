@@ -37,5 +37,5 @@
 </template>
 
 <script lang="ts" setup>
-const { activeMenu, menuList } = useMenuState()
+const { activeMenu, menuList } =await useMenuState()
 </script>

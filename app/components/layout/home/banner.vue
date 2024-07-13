@@ -53,7 +53,7 @@
 
 <script lang="ts" setup>
 import { ArrowRight } from '@element-plus/icons-vue'
-const { activeMenu, menuList } = useMenuState()
+const { activeMenu, menuList } =await useMenuState()
 // :creative-effect="{
 //             prev: {
 //                 shadow: false,

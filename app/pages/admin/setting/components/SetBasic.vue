@@ -5,7 +5,7 @@ const props = defineProps<{
     data?: ISystemInfoData
 }>()
 
-const {setSystemUpdate} =await useSystemState()
+const { setSystemUpdate } = await useSystemState()
 
 const lang = ref<LanguageType>('cn')
 
@@ -18,6 +18,8 @@ const form = reactive({
 
         company_en: '',
         address_en: '', // 公司地址
+        welcome: '',
+        welcome_en: '',
 
         phone: '', // 公司电话
         email: '', // 公司邮箱
@@ -54,6 +56,8 @@ const initDefaultData = async () => {
     form.data.company_en = propsData.company_en
     form.data.address = propsData.address
     form.data.address_en = propsData.address_en
+    form.data.welcome = propsData.welcome
+    form.data.welcome_en = propsData.welcome_en
     form.data.logo = propsData.logo || ''
     // form.data.logo2 = propsData.logo2 || ''
     form.data.qr_code = propsData.wx_code || ''
@@ -73,10 +77,10 @@ const onSubmit = async () => {
     const param: ISystemEditParams = {
         company: form.data.company?.trim() ?? '',
         company_en: form.data.company_en?.trim() ?? '',
-
         address: form.data.address?.trim() ?? '',
-
         address_en: form.data.address_en?.trim() ?? '',
+        welcome: form.data.welcome?.trim() ?? '',
+        welcome_en: form.data.welcome_en?.trim() ?? '',
         phone: form.data.phone?.trim() ?? '',
         email: form.data.email?.trim() ?? '',
         logo: form.data.logo?.trim() ?? '',
@@ -135,6 +139,11 @@ onBeforeMount(() => {
                             show-word-limit />
                     </el-form-item>
                 </el-col>
+                <el-col :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
+                    <el-form-item prop="welcome" label="欢迎信息：">
+                        <el-input v-model="form.data.welcome" maxlength="30" clearable />
+                    </el-form-item>
+                </el-col>
             </template>
             <template v-else-if="lang === 'en'">
                 <el-col :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
@@ -148,6 +157,11 @@ onBeforeMount(() => {
                             show-word-limit />
                     </el-form-item>
                 </el-col>
+                <el-col :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
+                    <el-form-item prop="welcome_en" label="英文欢迎信息：">
+                        <el-input v-model="form.data.welcome_en" maxlength="50" clearable />
+                    </el-form-item>
+                </el-col>
             </template>
 
             <el-col :xs="24" :sm="24" :md="18" :lg="12" :xl="10">
@@ -155,9 +169,14 @@ onBeforeMount(() => {
                     <el-input v-model="form.data.phone" maxlength="50" clearable />
                 </el-form-item>
             </el-col>
-            <el-col :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
-                <el-form-item prop="seo_title" label="SEO标题：">
-                    <el-input v-model="form.data.seo_title" maxlength="50" clearable />
+            <el-col v-if="lang==='cn'" :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
+                <el-form-item prop="filing" label="备案信息：">
+                    <CoEditor v-model="form.data.filing" />
+                </el-form-item>
+            </el-col>            
+            <el-col v-if="lang==='en'" :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
+                <el-form-item prop="filing_en" label="英文备案信息：">
+                    <CoEditor v-model="form.data.filing_en" />
                 </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
@@ -200,6 +219,15 @@ onBeforeMount(() => {
                         <!-- <UploadFile v-model="form.data.qr_code" /> -->
                     </el-form-item>
                 </div>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+
+                <el-form-item label="启用英文版:" prop="is_en">
+                    <el-radio-group v-model="form.data.is_en">
+                        <el-radio label="启用" :value="true" />
+                        <el-radio label="禁用" :value="false" />
+                    </el-radio-group>
+                </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                 <el-form-item>

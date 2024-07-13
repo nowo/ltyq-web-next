@@ -15,7 +15,7 @@ const props = defineProps<{
     value?: number
 }>()
 
-const { activeMenu, menuList } = useMenuState()
+const { activeMenu, menuList } = await useMenuState()
 
 const route = useRoute()
 const setActiveClassName = (url: string, index: number) => {

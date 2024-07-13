@@ -31,6 +31,7 @@ export const getSystemInfo = defineEventHandler(async (event) => {
                 title_en: res2.title,
                 address_en: res2.address,
                 filing_en: res2.filing,
+                welcome_en: res2.welcome,
                 // copyright_en: res2.copyright,
             },
         }
@@ -69,6 +70,7 @@ export const setSystemInfo = defineEventHandler(async (event) => {
                 filing: param.filing,
                 icon: param.icon,
                 is_en: !!param.is_en,
+                welcome: param.welcome || ''
             },
             where: { id: 1 },
         }),
@@ -86,7 +88,7 @@ export const setSystemInfo = defineEventHandler(async (event) => {
                 // seo_description: param.seo_description,
                 filing: param.filing_en,
                 // copyright: param.copyright_en,
-                // welcome: param.welcome_en,
+                welcome: param.welcome_en || '',
             },
             where: { id: 2 },
         }),

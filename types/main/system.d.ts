@@ -21,6 +21,8 @@ declare interface ISystemInfoData {
     company_en: string //
     address_en: string //
     filing_en: string //
+    welcome: string //
+    welcome_en: string //
 }
 /**
  * 修改系统信息请求参数
@@ -43,6 +45,8 @@ declare interface ISystemEditParams {
     company_en: string //
     address_en: string //
     filing_en: string //
+    welcome: string //
+    welcome_en: string //
 }
 
-type LanguageType = 'cn'|'en'
+type LanguageType = 'cn' | 'en'

@@ -11,17 +11,17 @@
                         <li class="join_list">
                             <input v-model="form.name" name="customName" type="text"
                                 :placeholder="$lang('您的名字', 'Name') || ''">
-                            <div><img src="assets/image/icon_join1.png" alt=""></div>
+                            <!-- <div><img src="assets/image/icon_join1.png" alt=""></div> -->
                         </li>
                         <li class="join_list">
                             <input v-model="form.phone" name="mobile" type="text"
                                 :placeholder="$lang('您的电话', 'Phone') || ''">
-                            <div><img src="assets/image/icon_join2.png" alt=""></div>
+                            <!-- <div><img src="assets/image/icon_join2.png" alt=""></div> -->
                         </li>
                         <li class="join_list">
                             <input v-model="form.email" name="email" type="email"
                                 :placeholder="$lang('您的邮箱', 'Email') || ''">
-                            <div><img src="assets/image/icon_join3.png" alt=""></div>
+                            <!-- <div><img src="assets/image/icon_join3.png" alt=""></div> -->
                         </li>
                         <li class="join_list">
                             <input v-model="form.address" name="address" class="address" type="text"
@@ -59,7 +59,7 @@ const { $lang } = useNuxtApp()
 definePageMeta({
     layout: 'home',
 })
-const {systemInfo} = await useSystemState()
+const { systemInfo } = await useSystemState()
 
 const { data } = await useCustomFetch<Prisma.OtherMaxAggregateOutputType>('/api/page/other', {
     params: {

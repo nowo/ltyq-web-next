@@ -5,6 +5,7 @@ import type { GlobalComponents } from '@vue/runtime-core'
 // import type { GlobalComponents } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 import type { FormItemProps, InputProps, TableColumnCtx } from 'element-plus'
+import type { Menu } from '@prisma/client'
 
 declare global {
     type ComponentInstance = {
@@ -44,6 +45,10 @@ declare global {
     //     props: { props?: CascaderProps } & Record<string, any>
     // }
 
+    // ....////////////////////////////////////////////////////////////////////////
+    interface IMenuListItem extends Menu {
+        children: IMenuListItem[]
+    }
 }
 
 declare module '#app' {
@@ -57,9 +62,9 @@ declare module '#app' {
         isAffix?: boolean // 是否固定在标签栏
 
         permissionList?: {
-            // Record<PermissionType,string> 
-            [K in PermissionType]?:string
-        },// 页面所有权限功能数据
+            // Record<PermissionType,string>
+            [K in PermissionType]?: string
+        }// 页面所有权限功能数据
         permissionCode?: PermissionType[] // 允许的权限码
     }
 }

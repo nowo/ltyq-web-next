@@ -1,32 +1,31 @@
 <template>
     <footer class="footer">
-        <div class="footer_module main-bg-color">
-            <div class="width_box footer_box">
-                <div class="footer_one flex">
-                    <div class="footer_list footer_contact">
-                        <p class="footer_title">
-                            {{ $lang('联系我们', 'Contact us') }}
-                        </p>
-                        <p class="footer_phone">
-                            {{ systemInfo?.phone }}
-                        </p>
-                        <p class="footer_phone">
-                            {{ systemInfo?.phone2 }}
-                        </p>
-                        <p class="footer_site">
-                            {{ $lang(systemInfo?.address, systemInfo?.address_en) }}
-                        </p>
-                        <p style="padding-left: 1.5rem;">
-                            {{ systemInfo?.email }}
-                        </p>
-                        <!-- <p style="padding-left: 1.5rem;">
+        <div class="container ma c-[--ci-white]">
+            <div class="footer-top">
+                <div class="footer_list footer_contact">
+                    <h3 class="footer-tle">
+                        {{ $lang('联系我们', 'Contact us') }}
+                    </h3>
+                    <p class="footer_phone">
+                        {{ systemInfo?.phone }}
+                    </p>
+                    <p class="footer_phone">
+                        {{ systemInfo?.phone2 }}
+                    </p>
+                    <p class="footer_site">
+                        {{ $lang(systemInfo?.address, systemInfo?.address_en) }}
+                    </p>
+                    <p style="padding-left: 1.5rem;">
+                        {{ systemInfo?.email }}
+                    </p>
+                    <!-- <p style="padding-left: 1.5rem;">
                             info@eaglotest.com.cn
                         </p>
                         <p style="padding-left: 1.5rem;">
                             7天-24小时为您服务！
                         </p> -->
-                    </div>
-                    <!-- <div class="footer_list">
+                </div>
+                <!-- <div class="footer_list">
                         <p class="footer_title">
                             {{ $lang('产品中心', 'Product Center') }}
                         </p>
@@ -37,63 +36,64 @@
                             </NuxtLinkLocale>
                         </div>
                     </div> -->
-                    <!-- <div class="footer_list footer_nav"> -->
-                    <div class="footer_list">
-                        <p class="footer_title">
-                            {{ $lang('快速链接', 'Quick links') }}
-                        </p>
-                        <div class="footer_link">
-                            <NuxtLinkLocale v-for="item in menuList" :key="item.id" :to="item.href">
+                <!-- <div class="footer_list footer_nav"> -->
+                <div class="footer_list">
+                    <p class="footer_title">
+                        {{ $lang('快速链接', 'Quick links') }}
+                    </p>
+                    <div class="footer_link">
+                        <div v-for="item in menuList" :key="item.id">
+                            <NuxtLinkLocale :to="item.href">
                                 {{ $lang(item.title, item.title_en) }}
                             </NuxtLinkLocale>
                         </div>
-                    </div>
-                    <div class="footer_list footer_list1">
-                        <div class="footer_code">
-                            <CoImage class="w100% pb100%" :src="systemInfo?.customCode" />
-                            <span>{{ $lang('微信客服', 'WeChat customer service') }}</span>
-                        </div>
-                        <div class="footer_code">
-                            <CoImage class="w100% pb100%" :src="systemInfo?.qrCode" />
-                            <span> {{ $lang('微信公众号', 'WeChat official account') }}</span>
-                        </div>
+
                     </div>
                 </div>
-                <div class="footer_two">
-                    <div class="c-#fff" v-html="$lang(systemInfo?.filing, systemInfo?.filing_en)" />
+                <div class="flex gap-30px">
+                    <div class="footer-code">
+                        <CoImage class="w100% pb100% block" :src="systemInfo?.customCode" />
+                        <span>{{ $lang('微信客服', 'WeChat customer service') }}</span>
+                    </div>
+                    <div class="footer-code">
+                        <CoImage class="w100% pb100%" :src="systemInfo?.qrCode" />
+                        <span> {{ $lang('微信公众号', 'WeChat official account') }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="c-#fff" v-html="$lang(systemInfo?.filing, systemInfo?.filing_en)" />
 
-                    <div class="footer_icBox flex">
-                        <NuxtLink v-for="item in links" :key="item.id" :to="item.href" target="_blank"
-                            class="footer_icon" :title="$lang(item.title, item.title_en) || ''">
-                            <img :src="item.img" class="max-h40px" :alt="$lang(item.title, item.title_en) || ''">
-                        </NuxtLink>
-                        <!-- <a target="" class="footer_icon"
+                <div class="footer_icBox flex">
+                    <NuxtLink v-for="item in links" :key="item.id" :to="item.href" target="_blank" class="footer_icon"
+                        :title="$lang(item.title, item.title_en) || ''">
+                        <img :src="item.img" class="max-h40px" :alt="$lang(item.title, item.title_en) || ''">
+                    </NuxtLink>
+                    <!-- <a target="" class="footer_icon"
                             href="https://www.facebook.com/profile.php?id=100069614070466?lang=zh-Hans"><img
                                 src="assets/image/facebook.png" alt="Facebook"></a>
                         <a target="" class="footer_icon" href=""><img src="assets/image/ins.png" alt="ins"></a>
                         <a target="" class="footer_icon" href=""><img src="assets/image/linkdin.png" alt="linkdin"></a> -->
 
-                        <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share0.png" alt=""></a> -->
-                        <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share1.png" alt=""></a> -->
-                        <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share2.png" alt=""></a> -->
-                        <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share3.png" alt=""></a> -->
-                        <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share4.png" alt=""></a> -->
-                    </div>
+                    <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share0.png" alt=""></a> -->
+                    <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share1.png" alt=""></a> -->
+                    <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share2.png" alt=""></a> -->
+                    <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share3.png" alt=""></a> -->
+                    <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share4.png" alt=""></a> -->
                 </div>
             </div>
+
         </div>
     </footer>
 </template>
 
 <script lang="ts" setup>
 const { $lang } = useNuxtApp()
-const {systemInfo} = await useSystemState()
+const { systemInfo } = await useSystemState()
 
-const classifyList = await useGoodsClassifyState().getClassify()
+// const classifyList = await useGoodsClassifyState().getClassify()
 
-const menuState = useMenuState()
-
-const menuList = await menuState.getMenuList()
+const { menuList } = await useMenuState()
 
 const qqLink = computed(() => {
     if (systemInfo.value?.qq) {
@@ -111,6 +111,4 @@ const { data: links } = await useCustomFetch<ISlideListResponse[]>('/api/page/ge
 })
 </script>
 
-<style lang="scss" scoped>
-// @import url('@/assets/style/public.scss');
-</style>
+<style lang="scss" scoped></style>

@@ -43,9 +43,9 @@ model Menu {
     title    String? @db.VarChar(100)
     title_en String? @db.VarChar(100)
     href     String? @db.VarChar(200)
-    status    Int?    @default(1)
+    status   Int?    @default(1)
     is_goods Boolean @default(false)
-    img String? @db.VarChar(255)
+    img      String? @db.VarChar(255)
 
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
@@ -109,10 +109,10 @@ model Product {
     type        Int      @default(0)
     read        Int?     @default(0)
 
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
+    created_at DateTime   @default(now())
+    updated_at DateTime   @updatedAt
     upload     Upload[]
-    classify Classify[]
+    classify   Classify[]
 }
 
 model System {
@@ -128,9 +128,10 @@ model System {
     phone       String? @db.VarChar(20)
     email       String? @db.VarChar(50)
 
-    filing String?  @db.Text
-    icon   String?  @db.VarChar(255)
-    is_en  Boolean? @db.Bit(1)
+    filing  String?  @db.Text
+    icon    String?  @db.VarChar(255)
+    is_en   Boolean? @db.Bit(1)
+    welcome String?  @db.VarChar(50)
 
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
@@ -179,8 +180,6 @@ model Upload {
 //     @@id([product_id, link_id, news_id, other_id])
 // }
 
-
-
 model Recruit {
     id         Int     @id @default(autoincrement())
     title      String  @db.VarChar(100)
@@ -201,8 +200,6 @@ model Recruit {
 
     @@map("recruit")
 }
-
-
 
 model Classify {
     id       Int     @id @default(autoincrement())

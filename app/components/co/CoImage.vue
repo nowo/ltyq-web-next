@@ -14,16 +14,27 @@ const iconSize = computed(() => {
     <el-image class="co-image" :z-index="10000" :preview-teleported="true" v-bind="$attrs">
         <template #error>
             <div class="el-image__error">
-                <el-icon>
-                    <i class="i-ep-picture" />
-                </el-icon>
+                <i class="i-ep-picture" />
             </div>
         </template>
     </el-image>
 </template>
 
 <style lang="scss" scoped>
-.el-image__error {
-    font-size: v-bind('iconSize');
+.co-image {
+    position: relative;
+
+    .el-image__error {
+
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+
+        >i {
+            font-size: v-bind('iconSize');
+        }
+    }
 }
 </style>
