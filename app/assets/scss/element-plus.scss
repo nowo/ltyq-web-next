@@ -3,6 +3,7 @@
 
 
     --co-menu-width: 200px;
+    --co-upload-picture-card-size: 148px;
 }
 
 
@@ -47,4 +48,16 @@
 
 .el-drawer__body {
     --el-drawer-padding-primary: 0;
+}
+
+.el-upload-list {
+
+    &.el-upload-list--picture-card {
+        --el-upload-list-picture-card-size: var(--co-upload-picture-card-size);
+    }
+
+    .el-upload--picture-card {
+        --el-upload-picture-card-size: var(--co-upload-picture-card-size);
+    }
+
 }

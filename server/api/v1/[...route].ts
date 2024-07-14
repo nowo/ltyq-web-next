@@ -4,6 +4,8 @@ import { getAdminInfo, getAdminList, setAdminCreate, setAdminDelete, setAdminUpd
 import { getSystemInfo, setSystemInfo } from '~~/server/controller/system'
 import { getMenuList, setMenuCreate, setMenuDelete, setMenuUpdate } from '~~/server/controller/menu'
 import { getProductList, setProductCreate, setProductDelete, setProductUpdate } from '~~/server/controller/product'
+import { getClassifyList, setClassifyCreate, setClassifyDelete, setClassifyUpdate } from '~~/server/controller/classify'
+import { getNewsList, setNewsCreate, setNewsDelete, setNewsUpdate } from '~~/server/controller/news'
 
 const router = createRouter()
 
@@ -34,7 +36,15 @@ router.use('/product/add', setProductCreate) // 添加产品
 router.use('/product/edit', setProductUpdate) // 修改产品
 router.use('/product/delete', setProductDelete) // 删除产品
 
+router.use('/classify/list', getClassifyList) // 产品分类列表
+router.use('/classify/add', setClassifyCreate) // 添加产品分类
+router.use('/classify/edit', setClassifyUpdate) // 修改产品分类
+router.use('/classify/delete', setClassifyDelete) // 删除产品分类
 
+router.use('/news/list', getNewsList) // 新闻列表
+router.use('/news/add', setNewsCreate) // 添加新闻
+router.use('/news/edit', setNewsUpdate) // 修改新闻
+router.use('/news/delete', setNewsDelete) // 删除新闻
 
 
 router.use('/page/menu', getMenuList) // 菜单列表 

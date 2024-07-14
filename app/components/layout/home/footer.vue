@@ -2,22 +2,22 @@
     <footer class="footer">
         <div class="container ma c-[--ci-white]">
             <div class="footer-top">
-                <div class="footer_list footer_contact">
+                <div class="footer-contact">
                     <h3 class="footer-tle">
                         {{ $lang('联系我们', 'Contact us') }}
                     </h3>
-                    <p class="footer_phone">
+                    <div class="text-item">
                         {{ systemInfo?.phone }}
-                    </p>
-                    <p class="footer_phone">
+                    </div>
+                    <div class="text-item">
                         {{ systemInfo?.phone2 }}
-                    </p>
-                    <p class="footer_site">
+                    </div>
+                    <div class="text-item">
                         {{ $lang(systemInfo?.address, systemInfo?.address_en) }}
-                    </p>
-                    <p style="padding-left: 1.5rem;">
+                    </div>
+                    <div class="text-item">
                         {{ systemInfo?.email }}
-                    </p>
+                    </div>
                     <!-- <p style="padding-left: 1.5rem;">
                             info@eaglotest.com.cn
                         </p>
@@ -37,12 +37,12 @@
                         </div>
                     </div> -->
                 <!-- <div class="footer_list footer_nav"> -->
-                <div class="footer_list">
-                    <p class="footer_title">
+                <div class="footer-nav">
+                    <h3 class="footer-tle">
                         {{ $lang('快速链接', 'Quick links') }}
-                    </p>
+                    </h3>
                     <div class="footer_link">
-                        <div v-for="item in menuList" :key="item.id">
+                        <div v-for="item in menuList" :key="item.id" class="text-item">
                             <NuxtLinkLocale :to="item.href">
                                 {{ $lang(item.title, item.title_en) }}
                             </NuxtLinkLocale>
@@ -50,13 +50,13 @@
 
                     </div>
                 </div>
-                <div class="flex gap-30px">
+                <div class="footer-img flex gap-30px">
                     <div class="footer-code">
-                        <CoImage class="w100% pb100% block" :src="systemInfo?.customCode" />
+                        <CoImage class="w100% pb100% block" :src="systemInfo?.customCode" :icon-size="28" />
                         <span>{{ $lang('微信客服', 'WeChat customer service') }}</span>
                     </div>
                     <div class="footer-code">
-                        <CoImage class="w100% pb100%" :src="systemInfo?.qrCode" />
+                        <CoImage class="w100% pb100%" :src="systemInfo?.qrCode" :icon-size="28" />
                         <span> {{ $lang('微信公众号', 'WeChat official account') }}</span>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
             <div class="footer-bottom">
                 <div class="c-#fff" v-html="$lang(systemInfo?.filing, systemInfo?.filing_en)" />
 
-                <div class="footer_icBox flex">
+                <div class="footer-icon">
                     <NuxtLink v-for="item in links" :key="item.id" :to="item.href" target="_blank" class="footer_icon"
                         :title="$lang(item.title, item.title_en) || ''">
                         <img :src="item.img" class="max-h40px" :alt="$lang(item.title, item.title_en) || ''">

@@ -70,8 +70,8 @@ const initData = () => {
 
 // 是否隐藏添加图标
 const isHideIcon = computed(() => {
-    console.log(attrs)
-    console.log('propsAttr,', propsAttr)
+    // console.log(attrs)
+    // console.log('propsAttr,', propsAttr)
     // 禁用时不显示添加图标
     if ('disabled' in attrs) return true
     // 已达到上传个数时不显示添加图标
@@ -174,7 +174,7 @@ defineExpose({
 </script>
 
 <template>
-    <el-upload v-bind="propsAttr" ref="uploadRef" v-model:file-list="uploadList" class="upload-box"
+    <el-upload v-bind="propsAttr" ref="uploadRef" v-model:file-list="uploadList" class="co-upload"
         :class="{ 'upload-hide-add': isHideIcon }" :on-preview="onImgPreview" :on-remove="onImageRemove"
         :http-request="onUploadFile" :on-success="onUploadSuccess" :on-exceed="onImageExceed">
         <slot v-if="$slots.default" />
@@ -192,7 +192,7 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
-.upload-box {
+.co-upload {
     :deep() {
         .el-upload.el-upload--picture-card {
             transition: all 0.8s;

@@ -24,9 +24,9 @@ const form = reactive({
         phone: '', // 公司电话
         email: '', // 公司邮箱
 
-        logo: '', // 网站logo
-        logo2: '', // 网站logo
-        qr_code: '', // 二维码
+        logo: [] as string[], // 网站logo
+        logo2: [] as string[], // 网站logo
+        qr_code: [] as string[], // 二维码
         seo_title: '', // seo标题
         seo_keyword: '', // 关键词
         seo_description: '', // 描述
@@ -36,7 +36,7 @@ const form = reactive({
         filing_en: '', // 备案号
         copyright_en: '', // 版权信息
 
-        icon: '', // 网站图标
+        icon: [] as string[], // 网站图标
         is_en: true, // 是否开启英文版
     },
 
@@ -58,16 +58,16 @@ const initDefaultData = async () => {
     form.data.address_en = propsData.address_en
     form.data.welcome = propsData.welcome
     form.data.welcome_en = propsData.welcome_en
-    form.data.logo = propsData.logo || ''
-    // form.data.logo2 = propsData.logo2 || ''
-    form.data.qr_code = propsData.wx_code || ''
+    form.data.logo = [propsData.logo || '']
+    form.data.logo2 = [propsData.logo2 || '']
+    form.data.qr_code = [propsData.wx_code || '']
     form.data.phone = propsData.phone || ''
     form.data.email = propsData.email || ''
     form.data.seo_title = propsData.title || ''
     form.data.seo_keyword = propsData.keyword || ''
     form.data.seo_description = propsData.description || ''
     form.data.filing = propsData.filing || ''
-    form.data.icon = propsData.icon || ''
+    form.data.icon = [propsData.icon || '']
     form.data.is_en = propsData.is_en
 }
 
@@ -83,9 +83,9 @@ const onSubmit = async () => {
         welcome_en: form.data.welcome_en?.trim() ?? '',
         phone: form.data.phone?.trim() ?? '',
         email: form.data.email?.trim() ?? '',
-        logo: form.data.logo?.trim() ?? '',
-        // logo2: form.data.logo2?.trim() ?? '',
-        wx_code: form.data.qr_code?.trim() ?? '',
+        logo: form.data.logo?.[0] ?? '',
+        logo2: form.data.logo2?.[0] ?? '',
+        wx_code: form.data.qr_code?.[0] ?? '',
         title: form.data.seo_title?.trim() ?? '',
         // title_en: '',
         keyword: form.data.seo_keyword?.trim() ?? '',
@@ -94,7 +94,7 @@ const onSubmit = async () => {
         // copyright: form.data.copyright?.trim() ?? '',
         filing_en: form.data.filing_en?.trim() ?? '',
         // copyright_en: form.data.copyright_en?.trim() ?? '',
-        icon: form.data.icon?.trim() ?? '',
+        icon: form.data.icon?.[0] ?? '',
         is_en: form.data.is_en,
     }
 
@@ -169,12 +169,12 @@ onBeforeMount(() => {
                     <el-input v-model="form.data.phone" maxlength="50" clearable />
                 </el-form-item>
             </el-col>
-            <el-col v-if="lang==='cn'" :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
+            <el-col v-if="lang === 'cn'" :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
                 <el-form-item prop="filing" label="备案信息：">
                     <CoEditor v-model="form.data.filing" />
                 </el-form-item>
-            </el-col>            
-            <el-col v-if="lang==='en'" :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
+            </el-col>
+            <el-col v-if="lang === 'en'" :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
                 <el-form-item prop="filing_en" label="英文备案信息：">
                     <CoEditor v-model="form.data.filing_en" />
                 </el-form-item>
@@ -203,25 +203,24 @@ onBeforeMount(() => {
             <el-col :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
                 <div class="flex flex-wrap">
                     <el-form-item prop="logo" label="网站logo：" class="min-w200px">
-                        <!-- <UploadFile v-model="form.data.logo" /> -->
+                        <CoUploadPhoto v-model="form.data.logo" class="upload" />
                     </el-form-item>
                     <el-form-item prop="logo2" label="网站logo2：" class="min-w200px">
-                        <!-- <UploadFile v-model="form.data.logo2" /> -->
+                        <CoUploadPhoto v-model="form.data.logo2" class="upload" />
+                    </el-form-item>
+                    <el-form-item prop="icon" label="网站图标：" class="min-w200px">
+                        <CoUploadPhoto v-model="form.data.icon" class="upload" />
                     </el-form-item>
                 </div>
             </el-col>
             <el-col :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
                 <div class="flex flex-wrap">
-                    <el-form-item prop="icon" label="网站图标：" class="min-w200px">
-                        <!-- <UploadFile v-model="form.data.icon" /> -->
-                    </el-form-item>
                     <el-form-item prop="qr_code" label="二维码：" class="min-w200px">
-                        <!-- <UploadFile v-model="form.data.qr_code" /> -->
+                        <CoUploadPhoto v-model="form.data.qr_code" class="upload" />
                     </el-form-item>
                 </div>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-
                 <el-form-item label="启用英文版:" prop="is_en">
                     <el-radio-group v-model="form.data.is_en">
                         <el-radio label="启用" :value="true" />
@@ -243,4 +242,8 @@ onBeforeMount(() => {
     </el-form>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.upload {
+    --co-upload-picture-card-size: 120px;
+}
+</style>

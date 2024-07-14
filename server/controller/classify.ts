@@ -5,6 +5,7 @@ import type { H3Event } from 'h3'
 type FindListQueryParam = {
     type: number
     title: string
+    status?: number
 } & IListPage
 
 /**
@@ -33,6 +34,8 @@ export const getClassifyList = defineEventHandler(async event => {
     }
 
     if (param?.type) where.type = param?.type
+    if (param && 'status' in param && typeof param.status === 'number') where.status = param?.status
+
 
     // 查询菜单姓"张"，1页显示20条
     let page: number | undefined

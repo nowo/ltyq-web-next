@@ -116,7 +116,7 @@ watch(() => route.path, () => {
             <!-- 导航 -->
             <div class="header-menu">
                 <div class="container ma flex items-center justify-between px10px">
-                    <NuxtLinkLocale to="/" class="logo_icon" :title="systemInfo?.company">
+                    <NuxtLinkLocale to="/" class="logo" :title="systemInfo?.company">
                         <img :src="systemInfo?.logo" :alt="systemInfo?.company">
                     </NuxtLinkLocale>
                     <div class="flex items-center gap-5px">

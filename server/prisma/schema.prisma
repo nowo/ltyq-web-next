@@ -67,11 +67,11 @@ model News {
     describe_en String? @db.VarChar(200)
     content     String? @db.Text
     content_en  String? @db.Text
-    // img         String? @db.VarChar(255)
+    img         String? @db.VarChar(255)
     sort        Int?    @default(0)
     type        Int     @default(0)
 
-    isHide Boolean? @default(false)
+    status Boolean? @default(false)
     read   Int?     @default(0)
 
     created_at DateTime @default(now())
