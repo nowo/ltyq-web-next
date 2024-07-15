@@ -23,6 +23,12 @@ const iconSize = computed(() => {
 <style lang="scss" scoped>
 .co-image {
     position: relative;
+    :deep(.el-image__inner){
+        position:absolute;
+        width:100%;
+        height:100%;
+        inset:0
+    }
 
     .el-image__error {
 

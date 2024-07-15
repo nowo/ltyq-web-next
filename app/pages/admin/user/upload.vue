@@ -35,7 +35,7 @@ const submit = async () => {
         //     "Content-Type" : "application/x-www-form-urlencoded"
         // }
     })
-    console.log('response :>> ', response)
+    // console.log('response :>> ', response)
 }
 const text = ref('hello')
 </script>

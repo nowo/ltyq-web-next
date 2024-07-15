@@ -31,8 +31,6 @@ const { files, open, reset, onChange } = useFileDialog({
 
 onChange(async () => {
     if (files?.value?.length) {
-        console.log('files.value :>> ', files.value)
-        console.log(files.value[0].name)
         const formData = new FormData()
 
         Array.from(files.value).forEach((file) => {
@@ -43,7 +41,7 @@ onChange(async () => {
             method: 'POST',
             body: formData,
         })
-        console.log(data.value)
+
     }
 })
 </script>

@@ -43,11 +43,8 @@ const rules = reactive<FormRules>({
     title: [ // 菜单名称
         { required: true, whitespace: true, message: '必填项不能为空', trigger: 'blur' },
     ],
-    title_en: [ // 菜单名称
-        { required: true, whitespace: true, message: '必填项不能为空', trigger: 'blur' },
-    ],
-    // name: [
-    //     { required: true, pattern: /^[0-9a-zA-Z]+$/, message: '只能输入数字和英文' },
+    // title_en: [ // 菜单名称
+    //     { required: true, whitespace: true, message: '必填项不能为空', trigger: 'blur' },
     // ],
     href: [
         // { required: true, pattern: /^(\/([A-Za-z0-9_-]*))+$/, message: '以/开头,后面为字母或数字,不能有空格' },

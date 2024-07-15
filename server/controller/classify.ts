@@ -159,3 +159,26 @@ export const setClassifyDelete = defineEventHandler(async event => {
         return { msg: '网络错误' }
     }
 })
+
+
+/**
+ * 根据分类id查找下面所有的子类id
+ * @param categoryId 分类id
+ * @returns number[]
+ */
+export async function findClassifyIds(categoryId: number): Promise<number[]> {
+    const categories = await prisma.classify.findMany({
+        where: {
+            p_id: categoryId,
+        },
+    })
+
+    let descendantIds: number[] = categories.map(category => category.id)
+
+    for (const category of categories) {
+        const childIds = await findClassifyIds(category.id)
+        descendantIds = descendantIds.concat(childIds)
+    }
+
+    return descendantIds
+}

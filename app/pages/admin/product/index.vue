@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Admin } from '@prisma/client'
+import type { Product } from '@prisma/client'
 import type { FormRules } from 'element-plus'
 import OperateModal from './components/OperateModal.vue'
 
@@ -24,7 +24,7 @@ const modalRef = ref<InstanceType<typeof OperateModal>>()
 // form表单数据类型
 interface FormSearchData {
     account: '' // 账号
-    username: '' // 用户名
+    title: '' // 标题
 
     time: DateRangeType // 时间范围
     state: '' // 状态：1：启用，2：禁用
@@ -33,13 +33,13 @@ interface FormSearchData {
 const searchData = reactive<CoFormToolProps<FormSearchData>>({
     data: {
         account: '', // 账号
-        username: '', // 用户名
+        title: '', // 标题
         time: ['', ''] as DateRangeType, // 时间范围
         state: '', // 状态：1：未审核，2：已审核
     },
     config: [
-        { column: { label: '用户名', prop: 'username' }, placeholder: '', width: '160' },
-        { column: { label: '账号', prop: 'account' }, placeholder: '', width: '160' },
+        { column: { label: '标题名称', prop: 'title' }, placeholder: '', width: '160' },
+        // { column: { label: '账号', prop: 'account' }, placeholder: '', width: '160' },
         { column: { label: '状态', prop: 'state' }, placeholder: '', width: '100' },
         { column: { label: '日期范围', prop: 'time' } },
     ],
@@ -51,14 +51,14 @@ const rules = reactive<FormRules>({
     money: [],
 })
 
-const tableData = reactive<CoTableProps<Admin>>({
+const tableData = reactive<CoTableProps<Product>>({
     data: [],
     tableHeader: [
         { property: 'id', label: 'id', width: '50' },
 
-        { property: 'username', label: '用户名', minWidth: '180' },
-        { property: 'account', label: '账号', width: '180' },
-        { property: 'role', label: '角色名称', width: '130', align: 'center' },
+        { property: 'title', label: '标题名称', minWidth: '180' },
+        { property: 'title_en', label: '英文标题名称', width: '180' },
+        { property: 'classifyId', label: '产品分类', width: '160', align: 'center' },
         // { property: 'status姓名', width: '180' },
         { property: 'status', label: '状态', align: 'center', width: '100' },
         { property: 'created_at', label: '创建时间', width: '220' },
@@ -71,24 +71,27 @@ const tableData = reactive<CoTableProps<Admin>>({
     isTool: true,
 })
 
+
+const {classifyList} =await useGoodsClassifyState()
+
 const initTableData = async () => {
-    const params: IAdminListParams = {
-        account: searchData.data.account?.trim() ?? '',
-        username: searchData.data.username?.trim() ?? '',
+    const params = {
+        // account: searchData.data.account?.trim() ?? '',
+        title: searchData.data.title?.trim() ?? '',
         status: searchData.data.state || '',
         isPage: true,
         page: tableData.pagination.page,
         pageSize: tableData.pagination.pageSize,
     }
     tableData.loading = true
-    const res = await useServerFetch<{ list: Admin[], total: number }>('/api/v1/product/list', {
+    const res = await useServerFetch<{ list: Product[], total: number }>('/api/v1/product/list', {
         method: 'post',
         body: params,
     })
     tableData.loading = false
 
     if (res.code !== 200) return ElMessage.error(res.msg)
-console.log(res)
+
     tableData.data = res.data.list
     tableData.pagination.total = res.data.total || 0
 }
@@ -104,19 +107,19 @@ const onReset = () => {
 }
 
 // 打开新增、修改
-const onOpenDialog = (type: DialogOperate, row?: Admin) => {
+const onOpenDialog = (type: DialogOperate, row?: Product) => {
     modalRef.value?.openModal(type, row)
 }
 
 // 删除用户
-const onDel = (row: Admin) => {
+const onDel = (row: Product) => {
     ElMessageBox.confirm(`此操作将永久删除该条内容，是否继续?`, '提示', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',
         buttonSize: 'default',
     }).then(async () => {
-        const res = await useServerFetch('/api/v1/admin/delete', {
+        const res = await useServerFetch('/api/v1/product/delete', {
             method: 'post',
             body: { id: row.id },
         })
@@ -147,7 +150,7 @@ initTableData()
                 <el-icon class="i-ep-folder-add mr2px">
                     <!-- <ele-FolderAdd /> -->
                 </el-icon>
-                新增用户
+                新增产品
             </el-button>
         </CoFormTool>
         <CoTable v-model:option="tableData" auto-height border @refresh="initTableData">
@@ -159,16 +162,8 @@ initTableData()
                     禁用
                 </el-tag>
             </template>
-            <template #role="{ row }">
-                <el-tag v-if="row.role === 1" type="success">
-                    超级管理员
-                </el-tag>
-                <el-tag v-else-if="row.role === 2" type="warning">
-                    管理员
-                </el-tag>
-                <el-tag v-else type="danger">
-                    普通用户
-                </el-tag>
+            <template #classifyId="{ row }">
+                {{row.classify?.title}}
             </template>
             <template #operate="{ row }">
                 <el-button v-if="checkPermission('edit')" type="primary" link @click="onOpenDialog('edit', row)">
@@ -181,7 +176,7 @@ initTableData()
             </template>
         </CoTable>
         <client-only>
-            <OperateModal ref="modalRef" title="产品" :list="[]" @update="initTableData" />
+            <OperateModal ref="modalRef" title="产品" :list="classifyList" @update="initTableData" />
         </client-only>
     </LayoutBox>
 </template>

@@ -62,8 +62,8 @@ const rules = reactive<FormRules>({
         // { required: true, pattern: /^(\/([A-Za-z0-9_-]*))+$/, message: '以/开头,后面为字母或数字,不能有空格' },
         { required: true, whitespace: true, message: '必填项不能为空', trigger: 'blur' },
     ],
-    img: [ // 图片
-        { required: true, whitespace: true, message: '必填项不能为空', trigger: 'blur' },
+    imgList: [ // 图片
+        { required: true, type: 'array', message: '必填项不能为空', trigger: 'blur' },
     ],
 })
 
@@ -112,7 +112,8 @@ const openModal = (type: DialogOperate, row?: Menu) => {
         form.data.p_id = row.p_id || ''
         form.data.status = row.status ? 1 : 0
 
-        form.data.imgList = row.icon ? [row.icon] : []
+        // form.data.imgList = row.icon ? [row.icon] : []
+        form.data.imgList = row.img ? [row.img] : []
     } else { // 新增
         form.data.id = 0
         form.data.title = ''
@@ -138,7 +139,6 @@ const [ApiFunc, btnLoading] = useLoadingSubmit()
 // 确定
 const onConfirm = useThrottleFn(async () => {
     const isVerify = await useFormVerify(formRef.value)
-    console.log(isVerify)
     if (!isVerify) return
 
     const data: Prisma.MenuUncheckedCreateInput = {
@@ -149,9 +149,10 @@ const onConfirm = useThrottleFn(async () => {
         sort: Number(form.data.sort),
         status: form.data.status ? 1 : 0,
         icon: form.data.icon?.trim() ?? '',
+        img:form.data.imgList[0] ?? '',
     }
 
-    // // console.log(data)
+
     if (operate.value === 'add') {
         const res = await ApiFunc(useServerFetch('/api/v1/menu/add', {
             method: 'POST',
@@ -202,12 +203,12 @@ defineExpose({
                     <el-option v-for="(item, index) in stateData.hrefList" :key="index" :label="item" :value="item" />
                 </el-select>
             </el-form-item>
-            <!-- <el-form-item label="展示图:" :prop="`${!form.data.p_id && form.data.href !== '/' ? 'img' : ''}`">
+            <el-form-item label="展示图:" :prop="`${!form.data.p_id && form.data.href !== '/' ? 'imgList' : ''}`">
                 <div class="w100% flex">
                     <CoUploadPhoto v-model="form.data.imgList" :limit="1" />
                     <span class="ml5px text-12px">顶级菜单请添加图片!</span>
                 </div>
-            </el-form-item> -->
+            </el-form-item>
 
             <el-form-item label="排序:">
                 <el-input-number v-model="form.data.sort" :min="0" :max="10000" controls-position="right" placeholder=""

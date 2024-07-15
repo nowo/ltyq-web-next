@@ -7,7 +7,7 @@ import MenuModal from './components/MenuModal.vue'
 definePageMeta({
     layout: 'admin',
     title: '菜单管理',
-    icon: 'i-ep-menu',
+    icon: 'i-mdi-menu',
     sort: 99,
     permissionList: {
         add: '新增',

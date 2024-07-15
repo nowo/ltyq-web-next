@@ -44,6 +44,7 @@
 </template>
 
 <script lang="ts" setup>
+import type{Link} from '@prisma/client'
 import {formatTime} from '@cooj/utils'
 const { $lang } = useNuxtApp()
 
@@ -52,9 +53,9 @@ definePageMeta({
 })
 
 const typeList = ref({
-    2: $lang('文档', 'Docs'),
-    3: $lang('视频', 'Video'),
-    4: $lang('软件', 'Software'),
+    4: $lang('文档', 'Docs'),
+    5: $lang('视频', 'Video'),
+    6: $lang('软件', 'Software'),
 })
 const type = ref(2)
 
@@ -64,12 +65,12 @@ const page = useRouteQuery('page', 1) // 当前页
 const pg = ref(Number(page.value))
 
 const productData = reactive({
-    list: [] as ILinkItem[],
+    list: [] as Link[],
     total: 0,
 })
 
 const initData = async () => {
-    const { data, error, refresh, execute } = await useCustomFetch<{ code: number, data: { list: ILinkItem[], total: number } }>(`/api/page/files`, {
+    const { data, error, refresh, execute } = await useCustomFetch<{  list: Link[], total: number  }>(`/api/v1/page/link`, {
         method: 'GET',
         params: {
             isPage: 1,

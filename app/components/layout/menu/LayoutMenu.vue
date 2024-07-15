@@ -18,7 +18,7 @@ const { adminRoutes } = useAdminMenuState()
 const routes = useRouter().getRoutes()
 
 function arrayToTreeList<T = any>(arr: T[], key: keyof T) {
-    console.log(arr)
+
     const map: any = {}
     const roots: T[] = []
 
@@ -48,7 +48,7 @@ function arrayToTreeList<T = any>(arr: T[], key: keyof T) {
 }
 
 const treeData = arrayToTreeList(routes, 'path')
-console.log('1231313', treeData)
+
 
 const routeList = computed(() => {
     const list = routes.filter((item) => {
@@ -71,13 +71,13 @@ const routeList = computed(() => {
 
 const isCollapse = ref(false)
 function handleOpen(key: string, keyPath: string[]) {
-    console.log(key, keyPath)
+    // console.log(key, keyPath)
 
     const routes = useRouter().getRoutes()
-    console.log(routes)
+    // console.log(routes)
 }
 function handleClose(key: string, keyPath: string[]) {
-    console.log(key, keyPath)
+    // console.log(key, keyPath)
 }
 
 // 获取父级菜单数据

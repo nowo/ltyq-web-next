@@ -6,15 +6,15 @@ import '~/assets/scss/base.scss'
 <template>
     <main class="main-box">
         <LayoutHomeHeader />
-        <!-- <LayoutHomeBanner /> -->
+        <LayoutHomeBanner />
         <slot />
         <LayoutHomeFooter />
         <el-backtop :right="25" :bottom="30" />
     </main>
 </template>
 
-<style lang="scss" scoped>
-// .main-box{
-//     width:100%;
-//     min-width: 1200px;
-// }</style>
+<style lang="scss">
+:root{
+    --el-color-primary:var(--ci-main-color);
+}
+</style>

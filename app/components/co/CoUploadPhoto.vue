@@ -34,7 +34,8 @@ function convertKeysToCamelCase(obj: Record<string, any>) {
         // 排除原型链上的属性
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
             const camelCaseKey = key.replace(/-([a-z])/g, (substring, char) => {
-                return char.toUpperCase()
+                // console.log(substring, char)
+                return substring.toUpperCase()
             })
             newObj[camelCaseKey] = obj[key]
         }
@@ -58,6 +59,7 @@ const uploadList = ref<UploadUserFile[]>([])
 
 // props.modelValue处理，转成相应的数据内容
 const initData = () => {
+    console.log(propsAttr)
     const list = props.modelValue.filter(item => !!item).map((item) => {
         const dat: UploadUserFile = { name: item, url: item, status: 'success' }
         return dat
@@ -70,8 +72,7 @@ const initData = () => {
 
 // 是否隐藏添加图标
 const isHideIcon = computed(() => {
-    // console.log(attrs)
-    // console.log('propsAttr,', propsAttr)
+
     // 禁用时不显示添加图标
     if ('disabled' in attrs) return true
     // 已达到上传个数时不显示添加图标
@@ -89,7 +90,7 @@ const emitsUpdate = (val?: string[]) => {
  * 上传图片方法,配合下面的onUploadSuccess一起使用
  */
 const onUploadFile: UploadRequestHandler = async (options) => {
-    // console.log('options :>> ', options);
+
 
     const formData = new FormData()
     formData.append('file', options.file)
@@ -101,19 +102,21 @@ const onUploadFile: UploadRequestHandler = async (options) => {
 }
 // 上传成功操作,更新数据，去除前端预览的blob地址
 const onUploadSuccess: UploadProps['onSuccess'] = async (response, file, files) => {
-    // console.log(response, file, files)
+
     // 只有所有都上传成功了才处理
     const isSuccess = files.every(it => it.status === 'success')
-    // console.log('isSuccess :>> ', isSuccess);
+
     if (!isSuccess) return
-    // console.log('uploadList.value :>> ', uploadList.value);
+
     files.forEach((item) => {
         // 只取携带response的才是刚上传的
         const resData = item.response as { code: number, data: { src: string }, msg: string }
+        console.log(resData)
         if (resData) {
             if (resData.code === 200) { // 成功上传
                 item.url = resData.data.src
-                uploadList.value.push(item)
+                // console.log('uploadList.value :>> ', uploadList.value);
+                // uploadList.value.push(item)
             } else { // 失败上传
                 ElMessage.error(resData.msg)
             }
@@ -153,7 +156,6 @@ const onImageRemove = (file: UploadFile) => {
 
 // 图片预览
 const onImgPreview = (file: UploadFile) => {
-    // console.log('file :>> ', file)
 
     const findIndex = props.modelValue?.findIndex(item => item === file.url)
     imageState.index = findIndex && findIndex >= 0 ? findIndex : 0
@@ -178,13 +180,13 @@ defineExpose({
         :class="{ 'upload-hide-add': isHideIcon }" :on-preview="onImgPreview" :on-remove="onImageRemove"
         :http-request="onUploadFile" :on-success="onUploadSuccess" :on-exceed="onImageExceed">
         <slot v-if="$slots.default" />
-        <el-icon v-else-if="propsAttr.listType === 'picture-card'" class="i-ep-plus" />
         <div v-else-if="'drag' in propsAttr">
             <el-icon class="el-icon--upload i-ep-upload-filled" />
             <div class="el-upload__text">
                 将文件拖放至这里或<em>点击</em>
             </div>
         </div>
+        <el-icon v-else-if="propsAttr.listType === 'picture-card'" class="i-ep-plus" />
         <el-icon v-else-if="propsAttr.listType === 'picture' || propsAttr.listType === 'text'" class="i-ep-plus" />
     </el-upload>
     <el-image-viewer v-if="imageState.viewer" :url-list="props.modelValue" :z-index="10000"

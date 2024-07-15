@@ -1,12 +1,14 @@
 <template>
-    <nav class="sort_module">
-        <ClientOnly>
+    <section class="child-menu-box">
+        <div class="container px10px ma flex items-center justify-center">
+            <ClientOnly>
             <NuxtLinkLocale v-for="(item, index) in activeMenu?.children?.filter(i => i.status)" :key="item.id"
-                :to="item.href || ''" :class="{ sort_active: setActiveClassName(item.href || '', index) }">
+                :to="item.href || ''" class="link-a" :class="{ active: setActiveClassName(item.href || '', index) }">
                 {{ $lang(item.title, item.title_en) }}
             </NuxtLinkLocale>
-        </ClientOnly>
-    </nav>
+            </ClientOnly>
+        </div>
+    </section>
 </template>
 
 <script lang="ts" setup>

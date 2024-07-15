@@ -21,7 +21,7 @@ const onChange = () => {
 }
 
 watchEffect(() => {
-    console.log('watch list :>> ', list.value)
+    // console.log('watch list :>> ', list.value)
 })
 </script>
 

@@ -3,9 +3,10 @@ import { setDeleteFile, setSaveFile } from '~~/server/controller/common'
 import { getAdminInfo, getAdminList, setAdminCreate, setAdminDelete, setAdminUpdate, setLoginSign, setPasswordUpdate, setRegister } from '~~/server/controller/admin'
 import { getSystemInfo, setSystemInfo } from '~~/server/controller/system'
 import { getMenuList, setMenuCreate, setMenuDelete, setMenuUpdate } from '~~/server/controller/menu'
-import { getProductList, setProductCreate, setProductDelete, setProductUpdate } from '~~/server/controller/product'
+import { getProductList, setProductCreate, setProductDelete, setProductUpdate,getProductInfo } from '~~/server/controller/product'
 import { getClassifyList, setClassifyCreate, setClassifyDelete, setClassifyUpdate } from '~~/server/controller/classify'
-import { getNewsList, setNewsCreate, setNewsDelete, setNewsUpdate } from '~~/server/controller/news'
+import { getNewsList, setNewsCreate, setNewsDelete, setNewsUpdate,getNewsInfo } from '~~/server/controller/news'
+import { getLinkList, setLinkCreate, setLinkDelete, setLinkUpdate } from '~~/server/controller/link'
 
 const router = createRouter()
 
@@ -46,8 +47,21 @@ router.use('/news/add', setNewsCreate) // 添加新闻
 router.use('/news/edit', setNewsUpdate) // 修改新闻
 router.use('/news/delete', setNewsDelete) // 删除新闻
 
+router.use('/link/list', getLinkList) // 新闻列表
+router.use('/link/add', setLinkCreate) // 添加新闻
+router.use('/link/edit', setLinkUpdate) // 修改新闻
+router.use('/link/delete', setLinkDelete) // 删除新闻
+
 
 router.use('/page/menu', getMenuList) // 菜单列表 
+router.use('/page/classify', getClassifyList) // 菜单列表 
+router.use('/page/news', getNewsList) // 新闻列表 
+router.use('/page/news/detail', getNewsInfo) // 新闻详情 
+router.use('/page/banner', getNewsInfo) //TODO 轮播图 
+
+router.use('/page/product', getProductList) // 产品列表 
+router.use('/page/product/detail', getProductInfo) // 产品列表 
+router.use('/page/link', getLinkList) // 产品列表 
 
 /**
  * 获取所有菜单信息

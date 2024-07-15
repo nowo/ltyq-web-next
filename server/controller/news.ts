@@ -17,11 +17,9 @@ export const getNewsList = defineEventHandler(async (event) => {
             contains: param.title, // 包含
         }
     }
-    // if (param?.href) {
-    //     where.href = {
-    //         contains: param.href, // 包含
-    //     }
-    // }
+    if (param?.type) {
+        where.type = param.type
+    }
 
 
 
@@ -42,7 +40,7 @@ export const getNewsList = defineEventHandler(async (event) => {
             take: pageSize,
             where,
             orderBy: {
-                created_at: 'desc', // 按创建时间倒序排序
+                createdAt: 'desc', // 按创建时间倒序排序
                 // updated_at: 'desc', // 按更新时间倒序排序
                 // id: 'asc', // 按id正序排序
             },
@@ -80,7 +78,10 @@ export const setNewsCreate = defineEventHandler(async (event) => {
     // if (!param.href) return { msg: '链接地址不能为空' }
 
     const res = await prisma.news.create({
-        data: param,
+        data: {
+            ...param,
+            status:!!param.status
+        },
     })
 
     if (res) {
@@ -105,7 +106,10 @@ export const setNewsUpdate = defineEventHandler(async (event) => {
     // if (!param.href) return { msg: '链接地址不能为空' }
 
     const res = await prisma.news.update({
-        data: param,
+        data: {
+            ...param,
+            status:!!param.status
+        },
         where: {
             id: param.id,
         },
@@ -142,3 +146,74 @@ export const setNewsDelete = defineEventHandler(async (event) => {
         return { msg: '网络错误' }
     }
 })
+
+
+
+/**
+ * 获取新闻详情
+ */
+export const getNewsInfo =defineEventHandler( async event=> {
+    // 获取参数
+    const param = await getEventParams<{ id: number, type: number }>(event)
+
+    if (!param?.id) return null
+    // if (!param?.type) return null
+
+    const res = await prisma.news.findUnique({
+        where: {
+            id: Number(param.id),
+            // type: Number(param.type),
+        },
+    })
+
+    if (!res) return null
+    // 取得上一条、下一条记录、更新阅读量
+    const [res1, res2] = await Promise.all([
+        prisma.news.findMany({ // lte 小于等于，使用倒序
+            where: {
+                createdAt: {
+                    lte: res.createdAt,
+                },
+                id: { // 排除
+                    not: res.id,
+                },
+                type: res.type, // 类型相同
+            },
+            orderBy: {
+                createdAt: 'desc', // 倒序排序
+            },
+        }),
+        prisma.news.findMany({ // gte 大于等于，使用正序
+            where: {
+                createdAt: {
+                    gt: res.createdAt,
+                },
+                id: {
+                    not: res.id,
+                },
+                type: res.type,
+            },
+            orderBy: {
+                createdAt: 'asc', // 升序排序
+            },
+        }),
+        prisma.news.update({
+            where: {
+                id: res.id,
+            },
+            data: {
+                read: (res.read || 0) + 1,
+            },
+        }),
+    ])
+
+    return {
+        code:200,
+        data:{
+            data: res,
+            prevNews: res1[0],
+            nextNews: res2[0],
+        }
+    }
+})
+

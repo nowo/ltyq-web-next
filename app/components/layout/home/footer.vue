@@ -91,7 +91,7 @@
 const { $lang } = useNuxtApp()
 const { systemInfo } = await useSystemState()
 
-// const classifyList = await useGoodsClassifyState().getClassify()
+// const {classifyList} = await useGoodsClassifyState()
 
 const { menuList } = await useMenuState()
 

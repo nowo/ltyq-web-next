@@ -5,6 +5,36 @@ import { ref } from 'vue'
 
 // import { wait } from '@/utils/common'
 
+
+
+/**
+ * vue路由获取Param类型的参数   /goods/list/1
+ * @param name 名称 （必须）
+ * @param init 默认值
+ * @returns
+ */
+export function useRouteParam<T = string>(name: string, init = '' as T) {
+    const route = useRoute()
+    return computed(() => (route.params as any)[name] as T ?? init)
+}
+/**
+ * vue路由获取query参数（获取？后面的参数）   /goods/list?name=foo&price=10
+ * @param name 名称 （必须）
+ * @param init
+ * @returns
+ */
+export function useRouteQuery<T = string>(name: string, init = '' as T) {
+    const route = useRoute()
+    // return computed({
+    //     get: () => route.query[name] as T ?? init,
+    //     set: () => { },
+    // })
+    return computed(() => route.query[name] as T ?? init)
+}
+
+
+
+
 type AutoLoadingResult = [
     <T>(requestPromise: Promise<T>) => Promise<T>,
     Ref<boolean>,
@@ -45,8 +75,10 @@ export const useFormVerify = async (formEl: FormInstance | undefined) => {
             console.warn(fields)
             const obj: any = fields
             const firstKey = Object.keys(obj)[0]
-            const text = obj[firstKey][0].message
-            ElMessage.error(text)
+            if (firstKey) {
+                const text = obj[firstKey][0].message
+                ElMessage.error(text)
+            }
             isVerify = false
             // return false
         }
@@ -153,4 +185,9 @@ export const useTableScrollbarLoad = async (tableRef?: TableInstance) => {
             top: numY,
         })
     })
+}
+
+
+export const showErrorPage = () => {
+    throw createError({ statusCode: 404, message: '页面不存在' })
 }

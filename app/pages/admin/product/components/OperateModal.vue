@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Admin, Prisma } from '@prisma/client'
+import type { Product, Prisma, Link } from '@prisma/client'
 import type { CheckboxValueType, FormInstance, FormRules } from 'element-plus'
 
 
@@ -13,16 +13,13 @@ const emits = defineEmits<{
     update: []
 }>()
 
-const { adminRoutes } = useAdminMenuState()
-const { userInfo, setUserInfo } = useUserState()
-
 const lang = ref<LanguageType>('cn')
 const visible = ref(false)
 
 const operate = ref<DialogOperate>()
 const comData = computed(() => {
-    if (operate.value === 'add') return { title: '新增用户' }
-    return { title: '修改用户' }
+    if (operate.value === 'add') return { title: '新增产品' }
+    return { title: '修改产品' }
 })
 const formRef = ref<FormInstance>()
 const form = reactive({
@@ -30,19 +27,22 @@ const form = reactive({
         id: 0,
         title: '',
         title_en: '',
-        name: '',
-        email: '',
-        // password_confirmation:'',
-        role: 1,
-        phone: '',
-        status: 1, // 1:启用 0:禁用
+        author: '',
+        contrast: '',
+        contrast_en: '',
+        annex: '',
+        annex_en: '',
+
+        status: true, // 1:启用 0:禁用
+        isHot: false,
         type: '',
         describe: '',
         describe_en: '',
         content: '',
         content_en: '',
         img: [] as string[],
-        sort: 1
+        sort: 1,
+        links: [] as Link[]
     },
 })
 
@@ -52,128 +52,110 @@ const rules = reactive<FormRules>({
         { pattern: /^[0-9a-z]+$/i, message: '只能输入数字和英文' },
         { min: 2, max: 16, message: '最少2个,最多16个字符' },
     ],
-    name: [
+    title: [
         { required: true, message: '必填项不能为空', whitespace: true },
+
+    ],
+    type: [
+        { required: true, message: '必填项不能为空' },
 
     ],
     // email: [
     //     { required: true, message: 'Please input Activity name' },
     //     { min: 3, max: 5, message: 'Length should be 3 to 5' },
     // ],
-    password: [
-        { required: true, message: '必填项不能为空', whitespace: true },
-        { pattern: /^[^\u4E00-\u9FA5 ]{6,16}$/, message: '不含有中文和空格,至少6位,最多16位' },
-    ],
+
     role: [
         { required: true, message: '必填项不能为空' },
 
     ],
 })
 
-interface IPermissionRouteData {
-    title: string // 菜单名称
-    name: string // 路由名
-    path: string // 菜单路径
-    permissionList?: {
-        // Record<PermissionType,string>
-        [K in PermissionType]?: string
-    }// 页面所有权限功能数据
-    permissionCode?: PermissionType[] // 允许的权限码
-    checkAll?: boolean // 全选
-    checkHalf?: boolean // 半选
-    checkPage?: boolean // 页面权限
-}
-const tableData = reactive<CoTableProps<IPermissionRouteData>>({
+
+const tableDataGoods = reactive<CoTableProps<Link>>({
     data: [],
     tableHeader: [
-        { property: 'title', label: '页面名称', width: '130' },
-        { property: 'permissionCode', label: '权限设置', minWidth: '150' },
+        { property: 'title', label: '标题', minWidth: 85 },
+        // { property: 'title_en', label: '英文标题', minWidth: 160 },
+        { property: 'content', label: '简介', minWidth: 100 },
+        // { property: 'content_en', label: '英文简介', minWidth: 150 },
+        { property: 'href', label: '文件', width: 100, align: 'center' },
+        { property: 'operate', label: '操作', width: 85, fixed: 'right', align: 'center' },
+
     ],
-    pagination: {
-        ...paginationConfig,
-        total: 0,
-    },
-    isTool: false,
+    pagination: paginationConfig,
+    isTool: false
 })
 
-// 全选事件
-const permissionCheckAllChange = (value: CheckboxValueType, row: IPermissionRouteData) => {
-    const keys = Object.keys(row.permissionList || {}) as PermissionType[]
-    row.permissionCode = value ? keys : []
-    row.checkHalf = false
+// 增加
+const onAddItem = () => {
+    const dat: Link = {
+        title: '',
+        title_en: '',
+        content: '',
+        img: '',
+        href: '',
+        sort: 0,
+        type: 3,
+        status: true,
+    }
+
+    form.data.links.push(dat)
+}
+// 移除
+const onRemoveItem = (row: Link) => {
+    const index = form.data.links.indexOf(row)
+    if (index >= 0) form.data.links.splice(index, 1)
 }
 
-// 半选事件
-const permissionCheckChange = (value: CheckboxValueType[], row: IPermissionRouteData) => {
-    const checkedCount = value.length
-    const keys = Object.keys(row.permissionList || {}) as PermissionType[]
-    row.checkAll = checkedCount === keys.length
-    row.checkHalf = checkedCount > 0 && checkedCount < keys.length
-}
-const tableRowClassName = ({
-    row,
-    rowIndex,
-}: {
-    row: IPermissionRouteData
-    rowIndex: number
-}) => {
-    if (row.checkPage) return 'bg-[--el-color-primary-light-9]!'
-
-    return 'opacity-70'
-}
-
-const openModal = (type: DialogOperate, row?: Admin) => {
+const openModal = (type: DialogOperate, row?: Product & { links: Link[] }) => {
     operate.value = type
-    // if (type === 'edit') {
-    //     // console.log(row)
-    //     form.data.account = row?.account || ''
-    //     form.data.password = ''
-    //     form.data.name = row?.username || ''
-    //     form.data.status = row?.status ? 1 : 0
-    //     form.data.role = row?.role || 3
-    //     form.data.id = row?.id || 0
-    //     const permission = JSON.parse(row?.permission || '[]') as { name: string, permission: PermissionType[] }[]
-    //     // console.log(permission)
-    //     tableData.data = adminRoutes.value.map((item) => {
-    //         // console.log(item)
-    //         const key = item.name as string
-    //         const permissionList = item.meta.permissionList || {}
-    //         const permissionListKeys = Object.keys(permissionList)
-    //         const permissionNode = permission.find(i => i.name === key)
-    //         const permissionCode = permissionNode?.permission ?? []
+    if (type === 'edit') {
 
-    //         const dat: IPermissionRouteData = {
-    //             title: item.meta.title || '',
-    //             name: key,
-    //             path: item.path,
-    //             permissionList,
-    //             permissionCode,
-    //             checkPage: !!permissionNode,
-    //             checkAll: permissionListKeys.length > 0 && permissionListKeys.length === permissionCode.length,
-    //             checkHalf: permissionListKeys.length > permissionCode.length,
-    //         }
-    //         return dat
-    //     })
-    // } else {
-    //     form.data.account = ''
-    //     form.data.password = ''
-    //     form.data.name = ''
-    //     form.data.status = 1
-    //     form.data.role = 3
-    //     form.data.id = 0
-    //     tableData.data = adminRoutes.value.map((item) => {
-    //         const key = item.name as string
-    //         const dat: IPermissionRouteData = {
-    //             title: item.meta.title || '',
-    //             name: key,
-    //             path: item.path,
-    //             permissionList: item.meta.permissionList || {},
-    //             permissionCode: [],
-    //         }
-    //         return dat
-    //     })
-    //     // console.log(tableData.data)
-    // }
+        form.data.title = row?.title || ''
+        form.data.title_en = row?.title_en || ''
+        form.data.content = row?.content || ''
+        form.data.content_en = row?.content_en || ''
+        form.data.describe = row?.describe || ''
+        form.data.describe_en = row?.describe_en || ''
+        form.data.contrast = row?.contrast || ''
+        form.data.contrast_en = row?.contrast_en || ''
+        form.data.annex = row?.annex || ''
+        form.data.annex_en = row?.annex_en || ''
+        form.data.sort = row?.sort || 0
+        form.data.status = row?.status ? true : false
+        form.data.isHot = row?.isHot ? true : false
+        form.data.id = row?.id || 0
+        form.data.type = row?.classifyId ||''
+        const imgs = row?.links?.filter(item => item.type === 2).map(item => item.img)
+        form.data.img = imgs || []
+        const links = row?.links?.filter(item => item.type === 3).map((item) => {
+            let link: Link = {
+                id: item.id || 0,
+                title: item.title,
+                content: item.content || '',
+                href: item.href || '',
+            }
+            return link
+        })
+        form.data.links = links || []
+    } else {
+        form.data.title = ''
+        form.data.title_en = ''
+        form.data.describe = ''
+        form.data.describe_en = ''
+        form.data.contrast = ''
+        form.data.contrast_en = ''
+        form.data.annex = ''
+        form.data.annex_en = ''
+        form.data.sort = 0
+
+        form.data.status = true
+        form.data.isHot = false
+        form.data.id = 0
+        form.data.img = []
+        form.data.type = ''
+    }
     visible.value = true
 }
 
@@ -189,47 +171,76 @@ const onCancel = () => {
 const [ApiFunc, btnLoading] = useLoadingSubmit()
 // 确定
 const onConfirm = useThrottleFn(async () => {
+    console.log(form.data.type)
     const isVerify = await useFormVerify(formRef.value)
     if (!isVerify) return
 
-    // const list = tableData.data.filter(item => item.checkPage).map((item) => {
-    //     return {
-    //         name: item.name,
-    //         permission: item.permissionCode || [],
-    //     }
-    // })
+    const links = form.data.links.filter(item => !!item.href).map((item) => {
+        return {
+            img: '',
+            href: item.href || '',
+            title: item.title || '',
+            content: item.content || '',
+            type: 3,
+        }
+    })
+    form.data.img.forEach((item) => {
+        if (item) {
+            links.push({
+                img: item,
+                href: '',
+                title: '',
+                content: '',
+                type: 2,
+            })
+        }
+    })
 
-    // const data: Prisma.ProductUncheckedCreateInput = {
-    //     account: form.data.account?.trim() ?? '',
-    //     username: form.data.name?.trim() ?? '',
-    //     password: form.data.password?.trim() ?? '',
-    //     role: form.data.role || 3,
-    //     permission: JSON.stringify(list),
-    //     status: form.data.status || 1,
-    // }
 
-    // // // console.log(data)
-    // if (operate.value === 'add') {
-    //     const res = await ApiFunc(useServerFetch('/api/v1/product/add', {
-    //         method: 'POST',
-    //         body: data,
-    //     }))
-    //     if (res.code !== 200) return ElMessage.error(res.msg)
-    //     ElMessage.success('添加成功')
-    // } else if (operate.value === 'edit') {
-    //     const param = {
-    //         ...data,
-    //         id: form.data.id,
-    //     }
-    //     const res = await ApiFunc(useServerFetch('/api/v1/admin/edit', {
-    //         method: 'POST',
-    //         body: param,
-    //     }))
-    //     if (res.code !== 200) return ElMessage.error(res.msg)
-    //     ElMessage.success('修改成功')
-    //     // 修改的用户是自己本身时，重新获取用户信息
-    //     if (userInfo.value.id === form.data.id) await setUserInfo()
-    // }
+    const data: Prisma.ProductUncheckedCreateInput = {
+        title: form.data.title?.trim() ?? '',
+        title_en: form.data.title_en?.trim() ?? '',
+        author: form.data.author?.trim() ?? '',
+        describe: form.data.describe?.trim() ?? '',
+        describe_en: form.data.describe_en?.trim() ?? '',
+        content: form.data.content?.trim() ?? '',
+        content_en: form.data.content_en?.trim() ?? '',
+        contrast: form.data.contrast?.trim() ?? '',
+        contrast_en: form.data.contrast_en?.trim() ?? '',
+        annex: form.data.annex?.trim() ?? '',
+        annex_en: form.data.annex_en?.trim() ?? '',
+        img: '',
+        sort: form.data.sort || 0,
+        // permission: JSON.stringify(list),
+        isHot: !!form.data.isHot,
+        status: !!form.data.status,
+        classifyId: Number(form.data.type),
+        links: {
+            createMany: {
+                data: links
+            }
+        }
+    }
+
+    if (operate.value === 'add') {
+        const res = await ApiFunc(useServerFetch('/api/v1/product/add', {
+            method: 'POST',
+            body: data,
+        }))
+        if (res.code !== 200) return ElMessage.error(res.msg)
+        ElMessage.success('添加成功')
+    } else if (operate.value === 'edit') {
+        const param = {
+            ...data,
+            id: form.data.id,
+        }
+        const res = await ApiFunc(useServerFetch('/api/v1/product/edit', {
+            method: 'POST',
+            body: param,
+        }))
+        if (res.code !== 200) return ElMessage.error(res.msg)
+        ElMessage.success('修改成功')
+    }
 
     emits('update') // 更新列表
     onCancel()
@@ -287,6 +298,12 @@ defineExpose({
                 <el-form-item label="详细内容" prop="content">
                     <CoEditor v-model="form.data.content" />
                 </el-form-item>
+                <el-form-item label="规格对比" prop="contrast">
+                    <CoEditor v-model="form.data.contrast" />
+                </el-form-item>
+                <el-form-item label="包装附件" prop="annex">
+                    <CoEditor v-model="form.data.annex" />
+                </el-form-item>
             </template>
             <template v-else-if="lang === 'en'">
                 <el-form-item label="英文简介" prop="describe_en">
@@ -295,8 +312,14 @@ defineExpose({
                 <el-form-item label="英文详细内容" prop="content_en">
                     <CoEditor v-model="form.data.content_en" />
                 </el-form-item>
+                <el-form-item label="英文规格对比" prop="contrast">
+                    <CoEditor v-model="form.data.contrast_en" />
+                </el-form-item>
+                <el-form-item label="英文包装附件" prop="annex">
+                    <CoEditor v-model="form.data.annex_en" />
+                </el-form-item>
             </template>
-            <!-- <el-form-item label="热门产品" prop="isHot">
+            <el-form-item label="首页显示" prop="isHot">
                 <el-radio-group v-model="form.data.isHot">
                     <el-radio :value="true">
                         是
@@ -306,38 +329,57 @@ defineExpose({
                     </el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="是否隐藏" prop="isHide">
-                <el-radio-group v-model="form.data.isHide">
+            <el-form-item label="状态" prop="status">
+                <el-radio-group v-model="form.data.status">
                     <el-radio :value="true">
-                        是
+                        显示
                     </el-radio>
                     <el-radio :value="false">
-                        否
+                        隐藏
                     </el-radio>
                 </el-radio-group>
-            </el-form-item> -->
+            </el-form-item>
             <el-form-item label="排序" prop="sort">
                 <el-input-number v-model="form.data.sort" :min="0" :max="10000" controls-position="right" placeholder=""
                     class="w100%" />
             </el-form-item>
+            <!-- <el-form-item label="文件关联" label-width="50%" class="mb0!">
+                <template #label>
+                    <div class="w100%">
+                        <b>文件关联</b>
+                        <span class="text-12px"> (详细更改请通过服务与维修-资料下载进行操作)</span>
+                    </div>
+                </template>
+            </el-form-item>
+            <CoTable v-model:option="tableDataGoods" :data="form.data.links" auto-height border>
+                <template #title="{ row, $index }">
+                    <el-form-item label="" label-width="auto" :prop="`tableData.${$index}.title`">
+                        <el-input v-model="row.title" class="w100%" />
+                    </el-form-item>
+                </template>
+                <template #content="{ row, $index }">
+                    <el-form-item label="" label-width="auto" :prop="`tableData.${$index}.content`">
+                        <el-input v-model="row.content" class="w100%" />
+                    </el-form-item>
+                </template>
+
+                <template #href="{ row }">
+                    <CoUploadFile v-model="row.href" type="text" accept="*" />
+                </template>
+                <template #operateHeader>
+                    <el-button @click="onAddItem">
+                        <i class="i-ep-plus"></i>
+                    </el-button>
+                </template>
+                <template #operate="{ row }">
+                    <el-button @click="onRemoveItem(row)">
+                        <i class="i-ep-delete">
+                        </i>
+                    </el-button>
+                </template>
+            </CoTable> -->
         </el-form>
     </CoDrawer>
 </template>
 
-<style lang="scss" scoped>
-.check-box {
-    >.el-checkbox {
-        margin-right: 15px;
-    }
-
-    :deep(.el-checkbox-group) {
-        .el-checkbox {
-            margin-right: 0;
-
-            +.el-checkbox {
-                margin-left: 15px;
-            }
-        }
-    }
-}
-</style>
+<style lang="scss" scoped></style>

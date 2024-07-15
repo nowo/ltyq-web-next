@@ -19,7 +19,12 @@ definePageMeta({
 })
 
 const modalRef = ref<InstanceType<typeof OperateModal>>()
-// const modalRef = ref<any>()
+const stateData=reactive({
+    typeList:[
+        {title:'公司新闻',id:1},
+        {title:'行业新闻',id:2},
+    ]
+})
 
 // form表单数据类型
 interface FormSearchData {
@@ -72,9 +77,9 @@ const tableData = reactive<CoTableProps<News>>({
 })
 
 const initTableData = async () => {
-    const params: IAdminListParams = {
-        account: searchData.data.account?.trim() ?? '',
-        username: searchData.data.username?.trim() ?? '',
+    const params = {
+        // account: searchData.data.account?.trim() ?? '',
+        title: searchData.data.title?.trim() ?? '',
         status: searchData.data.state || '',
         isPage: true,
         page: tableData.pagination.page,
@@ -181,7 +186,7 @@ initTableData()
             </template>
         </CoTable>
         <client-only>
-            <OperateModal ref="modalRef" title="产品" :list="[]" @update="initTableData" />
+            <OperateModal ref="modalRef" title="产品" :list="stateData.typeList" @update="initTableData" />
         </client-only>
     </LayoutBox>
 </template>

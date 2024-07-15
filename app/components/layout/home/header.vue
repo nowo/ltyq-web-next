@@ -15,7 +15,7 @@ const { menuList, activeMenu } = await useMenuState()
 //     }, 1500)
 // }
 
-const classifyList = await useGoodsClassifyState().getClassify()
+const {classifyList} = await useGoodsClassifyState()
 
 const setActiveMenu = (item: string) => {
     const href = activeMenu.value?.href
@@ -122,24 +122,24 @@ watch(() => route.path, () => {
                     <div class="flex items-center gap-5px">
                         <nav>
                             <ul class="menu-ul">
-                                <li v-for="item in menuList" :key="item.id">
+                                <li v-for="item in menuList" :key="item.id" :class="{'relative':!item.is_goods}">
                                     <NuxtLinkLocale :to="item.href" class="menu-btn"
                                         :class="{ nav_active: setActiveMenu(item.href || '') }">
                                         {{ $lang(item.title, item.title_en) }}
                                     </NuxtLinkLocale>
 
                                     <!-- 子菜单列表 -->
-                                    <div v-if="item.is_goods || item.children?.length" class="sub-box">
-                                        <ul v-if="item.is_goods" class="sub-list"
+                                    <div v-if="item.is_goods || item.children?.length" class="sub-box" :class="{'product-menu':item.is_goods}">
+                                        <ul v-if="item.is_goods" class="sub-list grid-cols-6"
                                             :class="{ nav_product: item.is_goods }">
-                                            <li v-for="opt in classifyList.filter(i => i.type === item.is_goods)"
+                                            <li v-for="opt in classifyList.filter(i => i.status)"
                                                 :key="opt.id" class="sub-li">
                                                 <NuxtLinkLocale :to="`/product?cid=${opt.id}`" class="nav_title">
                                                     {{ $lang(opt.title, opt.title_en) }}
                                                 </NuxtLinkLocale>
-                                                <div v-if="opt.children?.length" class="nav_sublevel">
+                                                <div v-if="opt.children?.length">
                                                     <NuxtLinkLocale v-for="sub in opt.children" :key="sub.id"
-                                                        :to="`/product?cid=${sub.id}`">
+                                                        :to="`/product?cid=${sub.id}`" class="sub-a">
                                                         {{ $lang(sub.title, sub.title_en) }}
                                                     </NuxtLinkLocale>
                                                 </div>

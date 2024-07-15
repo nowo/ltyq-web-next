@@ -47,7 +47,7 @@ export const useSystemState = async () => {
         // console.log(info, error, status)
         if (info.value?.code === 200) {
             systemInfo.value = info.value?.data
-            console.log(info.value?.data)
+            // console.log(info.value?.data)
         }
     }
     // 获取系统信息
@@ -88,10 +88,10 @@ export const useMenuState = async () => {
 
     if (!allList.value.length) {
         const { data: info, error, status } = await useCustomFetch<{ list: IMenuListItem[] }>('/api/v1/page/menu')
-        console.log(info, error, status)
+        // console.log(info, error, status)
         if (info.value?.code === 200) {
             allList.value = info.value?.data.list
-            console.log(info.value?.data.list)
+            // console.log(info.value?.data.list)
             menuList.value = filterTreeList(info.value?.data.list, 1, 'status', 'children')
         }
     }

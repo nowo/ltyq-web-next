@@ -26,14 +26,19 @@ model Link {
     title    String? @db.VarChar(100)
     title_en String? @db.VarChar(100)
     href     String? @db.VarChar(255)
+    img     String? @db.VarChar(255)
+    content     String? @db.Text
+    content_en     String? @db.Text
     sort     Int?    @default(0)
     type     Int?    @default(1)
-    isHide   Boolean @default(false)
+    status   Boolean @default(true)
 
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
-    upload Upload[]
+    upload    Upload[]
+    product   Product?  @relation(fields: [productId], references: [id])
+    productId Int?
 }
 
 model Menu {
@@ -74,8 +79,8 @@ model News {
     status Boolean? @default(false)
     read   Int?     @default(0)
 
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
 
     upload Upload[]
 }
@@ -100,19 +105,27 @@ model Product {
     title       String?  @db.VarChar(100)
     title_en    String?  @db.VarChar(100)
     author      String?  @db.VarChar(100)
-    describe    String?  @db.VarChar(200)
-    describe_en String?  @db.VarChar(200)
+    img         String?  @db.VarChar(255)
+    describe    String?  @db.Text
+    describe_en String?  @db.Text
     content     String?  @db.Text
     content_en  String?  @db.Text
+    contrast    String?  @db.Text
+    contrast_en String?  @db.Text
+    annex       String?  @db.Text
+    annex_en    String?  @db.Text
     sort        Int?     @default(0)
-    isHide      Boolean? @default(false)
+    isHot       Boolean? @default(false)
     type        Int      @default(0)
     read        Int?     @default(0)
+    status      Boolean? @default(false)
 
-    created_at DateTime   @default(now())
-    updated_at DateTime   @updatedAt
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
     upload     Upload[]
-    classify   Classify[]
+    classify   Classify @relation(fields: [classifyId], references: [id])
+    classifyId Int
+    links      Link[]
 }
 
 model System {

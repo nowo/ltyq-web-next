@@ -25,16 +25,16 @@
                 </div>
 
                 <!-- 面包屑 -->
-                <div class="width_box crumbs_module">
-                    <nav>
+                <div class="container ma px10px">
+                    <nav class="flex justify-end py30px">
                         <!-- {{ $lang('当前位置', 'Location') }}： -->
                         <ClientOnly>
-                            <i class="i-ep-home-filled mr10px block" />
                             <el-breadcrumb :separator-icon="ArrowRight" class="bread-box">
                                 <el-breadcrumb-item>
+                                    <i class="i-ep-home-filled mr10px inline-block align-start" /> 
                                     <NuxtLinkLocale to="/">
                                         <!-- {{ $t('home') }} -->
-                                        {{ $lang('首页', 'Home') }}
+                                       {{ $lang('首页', 'Home') }}
                                     </NuxtLinkLocale>
                                 </el-breadcrumb-item>
                                 <el-breadcrumb-item>
@@ -52,6 +52,7 @@
 </template>
 
 <script lang="ts" setup>
+import type {Link} from '@prisma/client'
 import { ArrowRight } from '@element-plus/icons-vue'
 const { activeMenu, menuList } =await useMenuState()
 // :creative-effect="{
@@ -72,10 +73,10 @@ const effect = {
     next: { translate: ['100%', 0, 0] },
 }
 
-const { data: banner } = await useCustomFetch<ISlideListResponse[]>('/api/page/get_banner', {
+const { data: banner } = await useCustomFetch<{list:Link[]}>('/api/v1/page/banner', {
     method: 'post',
     body: {
-        type: 5,
+        type: 1,
         isPage: 1,
     },
 })
