@@ -37,5 +37,6 @@
 </template>
 
 <script lang="ts" setup>
+const { $lang } = useNuxtApp()
 const { activeMenu, menuList } =await useMenuState()
 </script>

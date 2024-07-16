@@ -1,28 +1,27 @@
 <script lang="ts" setup>
-import type { News, Prisma } from '@prisma/client'
+import type { Product, Prisma, Link } from '@prisma/client'
 import type { CheckboxValueType, FormInstance, FormRules } from 'element-plus'
 
 
 const props = defineProps<{
     // type: number
-    title: string
-    list: {title:string,id:number}[]
+    // title: string
+    list: Record<string, string>
 }>()
 
 const emits = defineEmits<{
     update: []
 }>()
 
-const { adminRoutes } = useAdminMenuState()
-const { userInfo, setUserInfo } = useUserState()
+const injectData = inject<{ title: string, type: number | string, key?: 'download' }>('propsData')
 
 const lang = ref<LanguageType>('cn')
 const visible = ref(false)
 
 const operate = ref<DialogOperate>()
 const comData = computed(() => {
-    if (operate.value === 'add') return { title: '新增新闻' }
-    return { title: '修改新闻' }
+    if (operate.value === 'add') return { title: `新增${injectData?.title}` }
+    return { title: `修改${injectData?.title}` }
 })
 const formRef = ref<FormInstance>()
 const form = reactive({
@@ -31,16 +30,19 @@ const form = reactive({
         title: '',
         title_en: '',
         author: '',
-        status: 1, // 1:启用 0:禁用
-        type: 1,
         describe: '',
         describe_en: '',
         content: '',
         content_en: '',
-        img: [] as string[],
-        read:0,
+
+        status: true, // 1:启用 0:禁用
+        isHot: false,
+        type: '',
+        img: '',
+        imgList: [] as string[],
+        href: '',
+        hrefList: [] as string[],
         sort: 1,
-        isIndex:false,
     },
 })
 
@@ -54,38 +56,35 @@ const rules = reactive<FormRules>({
         { required: true, message: '必填项不能为空', whitespace: true },
 
     ],
+    type: [
+        { required: true, message: '必填项不能为空' },
+    ],
     // email: [
     //     { required: true, message: 'Please input Activity name' },
     //     { min: 3, max: 5, message: 'Length should be 3 to 5' },
     // ],
-    password: [
-        { required: true, message: '必填项不能为空', whitespace: true },
-        { pattern: /^[^\u4E00-\u9FA5 ]{6,16}$/, message: '不含有中文和空格,至少6位,最多16位' },
-    ],
-    role: [
-        { required: true, message: '必填项不能为空' },
-
-    ],
 })
 
 
-const openModal = (type: DialogOperate, row?: News) => {
+const openModal = (type: DialogOperate, row?: Link) => {
     operate.value = type
     if (type === 'edit') {
-        // console.log(row)
+
         form.data.title = row?.title || ''
         form.data.title_en = row?.title_en || ''
-        form.data.describe = row?.describe || ''
-        form.data.describe_en = row?.describe_en || ''
         form.data.content = row?.content || ''
         form.data.content_en = row?.content_en || ''
-        form.data.author = row?.author || ''
-        form.data.img = [row?.img || '']
-        form.data.status = row?.status ? 1 : 0
-        form.data.read = row?.read || 0
-        form.data.type=row?.type||1
+        // form.data.describe = row?.describe || ''
+        // form.data.describe_en = row?.describe_en || ''
+
+        form.data.sort = row?.sort || 0
+        form.data.status = row?.status ? true : false
         form.data.id = row?.id || 0
-        form.data.isIndex = !!row?.isIndex
+        form.data.type = row?.type?.toString() || ''
+
+        form.data.imgList = row?.img ? [row?.img] : []
+        form.data.hrefList = row?.href ? [row?.href] : []
+        form.data.href = row?.href || ''
 
     } else {
         form.data.title = ''
@@ -94,14 +93,16 @@ const openModal = (type: DialogOperate, row?: News) => {
         form.data.describe_en = ''
         form.data.content = ''
         form.data.content_en = ''
-        form.data.status = 1
+        form.data.sort = 0
+
+        form.data.status = true
+        form.data.isHot = false
         form.data.id = 0
-        form.data.sort=0
-        form.data.author = ''
-        form.data.read=0
-        form.data.type=1
-        form.data.img = []
-        form.data.isIndex = false
+
+        form.data.type = injectData?.key === 'download' ? '4' : `${injectData!.type}`
+        form.data.imgList = []
+        form.data.hrefList = []
+        form.data.href = ''
     }
     visible.value = true
 }
@@ -118,29 +119,37 @@ const onCancel = () => {
 const [ApiFunc, btnLoading] = useLoadingSubmit()
 // 确定
 const onConfirm = useThrottleFn(async () => {
+    // console.log(form.data.type)
+
+    let type = form.data.type
+    if (!type) {
+        type = injectData?.key === 'download' ? '4' : `${injectData!.type}`
+    }
+    let href = form.data.hrefList[0] ?? ''
+    if (injectData?.key !== 'download') {
+        href = form.data.href
+    }
     const isVerify = await useFormVerify(formRef.value)
     if (!isVerify) return
 
 
-    const data: Prisma.NewsUncheckedCreateInput = {
+    const data: Prisma.LinkUncheckedCreateInput = {
         title: form.data.title?.trim() ?? '',
         title_en: form.data.title_en?.trim() ?? '',
-        describe: form.data.describe?.trim() ?? '',
-        describe_en: form.data.describe_en?.trim() ?? '',
+        // author: form.data.author?.trim() ?? '',
+        // describe: form.data.describe?.trim() ?? '',
+        // describe_en: form.data.describe_en?.trim() ?? '',
         content: form.data.content?.trim() ?? '',
         content_en: form.data.content_en?.trim() ?? '',
-        author: form.data.author?.trim() ?? '',
         sort: form.data.sort || 0,
-        read: form.data.sort || 0,
         status: !!form.data.status,
-        isIndex: !!form.data.isIndex,
-        type: form.data.type || 1,
-        img:form.data.img?.[0] ?? ''
+        type: Number(type),
+        img: form.data.imgList[0] ?? '',
+        href,
     }
 
-    // // console.log(data)
     if (operate.value === 'add') {
-        const res = await ApiFunc(useServerFetch('/api/v1/news/add', {
+        const res = await ApiFunc(useServerFetch('/api/v1/link/add', {
             method: 'POST',
             body: data,
         }))
@@ -151,7 +160,7 @@ const onConfirm = useThrottleFn(async () => {
             ...data,
             id: form.data.id,
         }
-        const res = await ApiFunc(useServerFetch('/api/v1/news/edit', {
+        const res = await ApiFunc(useServerFetch('/api/v1/link/edit', {
             method: 'POST',
             body: param,
         }))
@@ -192,51 +201,43 @@ defineExpose({
                 <el-input v-model="form.data.sub_title_en" maxlength="50" placeholder="请输入英文副标题" clearable />
             </el-form-item> -->
 
-            <el-form-item label="发布者" prop="author">
+            <!-- <el-form-item label="发布者" prop="author">
                 <el-input v-model="form.data.author" maxlength="30" placeholder="请输入名称" clearable />
+            </el-form-item> -->
+            <el-form-item label="图片上传" prop="imgList">
+                <CoUploadPhoto v-model="form.data.imgList" />
             </el-form-item>
-            <el-form-item label="新闻类型" prop="type">
-                <el-select v-model="form.data.type" clearable filterable>
-                    <el-option v-for="item in props.list" :key="item.id" :label="item.title" :value="item.id" />
-                </el-select>
-            </el-form-item>
-            <el-form-item :label="`${props.title}图片`" prop="img">
-                <!-- <UploadFile v-model="form.data.img" /> -->
-                <CoUploadPhoto v-model="form.data.img"  />
+            <template v-if="injectData?.key === 'download'">
+                <el-form-item label="文件类型" prop="type">
+                    <el-select v-model="form.data.type" filterable clearable>
+                        <el-option v-for="(item, index) in props.list" :key="index" :label="item" :value="index" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="文件上传" prop="hrefList">
+                    <CoUploadPhoto v-model="form.data.hrefList" drag list-type="text" accept="*" />
+                </el-form-item>
+            </template>
+            <el-form-item v-else label="链接地址" prop="href">
+                <el-input v-model="form.data.href" maxlength="255" placeholder="请输入链接地址" clearable />
             </el-form-item>
 
             <template v-if="lang === 'cn'">
-                <el-form-item label="简介" prop="describe">
-                    <CoEditor v-model="form.data.describe" />
-                </el-form-item>
                 <el-form-item label="详细内容" prop="content">
                     <CoEditor v-model="form.data.content" />
                 </el-form-item>
             </template>
             <template v-else-if="lang === 'en'">
-                <el-form-item label="英文简介" prop="describe_en">
-                    <CoEditor v-model="form.data.describe_en" />
-                </el-form-item>
                 <el-form-item label="英文详细内容" prop="content_en">
                     <CoEditor v-model="form.data.content_en" />
                 </el-form-item>
             </template>
-            <!-- <el-form-item label="首页推荐" prop="isIndex">
-                <el-radio-group v-model="form.data.isIndex">
-                    <el-radio :value="true">
-                        是
-                    </el-radio>
-                    <el-radio :value="false">
-                        否
-                    </el-radio>
-                </el-radio-group>
-            </el-form-item> -->
+
             <el-form-item label="状态" prop="status">
                 <el-radio-group v-model="form.data.status">
-                    <el-radio :value="1">
+                    <el-radio :value="true">
                         显示
                     </el-radio>
-                    <el-radio :value="0">
+                    <el-radio :value="false">
                         隐藏
                     </el-radio>
                 </el-radio-group>
@@ -249,6 +250,4 @@ defineExpose({
     </CoDrawer>
 </template>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

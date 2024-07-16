@@ -1,32 +1,22 @@
 <script setup lang="ts">
-import type { Classify } from '@prisma/client'
+import type { Message } from '@prisma/client'
 import type { FormRules } from 'element-plus'
-import ClassifyModal from './components/ClassifyModal.vue'
+import OperateModal from './MessageModal.vue'
 
-definePageMeta({
-    layout: 'admin',
-    title: '产品分类',
-    icon: 'i-ep-menu',
-    sort: 11,
-    // keepalive: true
-    permissionList: {
-        add: '新增',
-        edit: '编辑',
-        del: '删除',
-        // view: '删除',
-        // read: '删除',
+
+
+const modalRef = ref<InstanceType<typeof OperateModal>>()
+    const stateData=reactive({
+        statusList: {
+        0: '未处理',
+        1: '已沟通',
+        2: '已完成',
     },
-})
-
-const modalRef = ref<InstanceType<typeof ClassifyModal>>()
-// const modalRef = ref<any>()
-const stateData = reactive({
-    menuList: [] as Classify[], // 用于传递给子组件使用
-})
+    })
 
 // form表单数据类型
 interface FormSearchData {
-    account: '' // 账号
+    type: '' // 账号
     title: '' // 标题
 
     time: DateRangeType // 时间范围
@@ -35,14 +25,14 @@ interface FormSearchData {
 
 const searchData = reactive<CoFormToolProps<FormSearchData>>({
     data: {
-        account: '', // 账号
+        type: '', // 账号
         title: '', // 标题
         time: ['', ''] as DateRangeType, // 时间范围
         state: '', // 状态：1：未审核，2：已审核
     },
     config: [
-        { column: { label: '分类名称', prop: 'title' }, placeholder: '', width: '160' },
-        // { column: { label: '账号', prop: 'account' }, placeholder: '', width: '160' },
+        { column: { label: '标题名称', prop: 'title' }, placeholder: '', width: '160' },
+        // { column: { label: '文件类型', prop: 'type' }, placeholder: '', width: '130' },
         { column: { label: '状态', prop: 'state' }, placeholder: '', width: '100' },
         { column: { label: '日期范围', prop: 'time' } },
     ],
@@ -54,19 +44,17 @@ const rules = reactive<FormRules>({
     money: [],
 })
 
-const tableData = reactive<CoTableProps<Classify>>({
+const tableData = reactive<CoTableProps<Message>>({
     data: [],
     tableHeader: [
-        { property: 'id', label: 'id', width: '150' },
-
-        { property: 'title', label: '分类名称', minWidth: '180' },
-        { property: 'title_en', label: '英文分类名称', width: '180' },
-        // { property: 'role', label: '角色名称', width: '130', align: 'center' },
-        { property: 'sort', label: '排序', width: '100', align: 'center', },
-        { property: 'status', label: '状态', align: 'center', width: '100' },
-        { property: 'createdAt', label: '创建时间', width: '220' },
-        // { property: 'update_at', label: '更新时间', width: '180' },
-        // { property: 'remark', label: '备注', width: '180' },
+        { property: 'id', label: 'id', width: '80' },
+        { property: 'title', label: '客户名称', minWidth: 120 },
+        { property: 'phone', label: '联系号码', width: 130 },
+        { property: 'email', label: '电子邮箱', width: 130 },
+        { property: 'address', label: '所在地区', minWidth: 100 },
+        { property: 'content', label: '备注', minWidth: 150 },
+        { property: 'createdAt', label: '操作时间', width: 210 },
+        { property: 'status', label: '状态', width: 100, align: 'center' },
         { property: 'operate', label: '操作', width: '120', align: 'center', fixed: 'right' },
 
     ],
@@ -74,16 +62,20 @@ const tableData = reactive<CoTableProps<Classify>>({
     isTool: true,
 })
 
-const initTableData = async (isUpdate?: boolean) => {
+
+const initTableData = async () => {
     const params = {
+        // account: searchData.data.account?.trim() ?? '',
         title: searchData.data.title?.trim() ?? '',
-        status: searchData.data.state || '',
+        status: searchData.data.state,
+        // type:searchData.data.type || '',
         isPage: true,
         page: tableData.pagination.page,
         pageSize: tableData.pagination.pageSize,
     }
+
     tableData.loading = true
-    const res = await useServerFetch<{ list: Classify[], total: number }>('/api/v1/classify/list', {
+    const res = await useServerFetch<{ list: Message[], total: number }>('/api/v1/message/list', {
         method: 'post',
         body: params,
     })
@@ -93,8 +85,6 @@ const initTableData = async (isUpdate?: boolean) => {
 
     tableData.data = res.data.list
     tableData.pagination.total = res.data.total || 0
-
-    if (isUpdate) stateData.menuList = res.data.list
 }
 
 // 搜索
@@ -108,19 +98,19 @@ const onReset = () => {
 }
 
 // 打开新增、修改
-const onOpenDialog = (type: DialogOperate, row?: Classify) => {
+const onOpenDialog = (type: DialogOperate, row?: Message) => {
     modalRef.value?.openModal(type, row)
 }
 
 // 删除用户
-const onDel = (row: Classify) => {
+const onDel = (row: Message) => {
     ElMessageBox.confirm(`此操作将永久删除该条内容，是否继续?`, '提示', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',
         buttonSize: 'default',
     }).then(async () => {
-        const res = await useServerFetch('/api/v1/classify/delete', {
+        const res = await useServerFetch('/api/v1/message/delete', {
             method: 'post',
             body: { id: row.id },
         })
@@ -128,11 +118,11 @@ const onDel = (row: Classify) => {
 
         ElMessage.success('删除成功')
 
-        initTableData(true) // 重新加载列表
+        initTableData() // 重新加载列表
     }).catch(() => { })
 }
 
-initTableData(true)
+initTableData()
 </script>
 
 <template>
@@ -140,8 +130,7 @@ initTableData(true)
         <CoFormTool v-model:option="searchData" :rules="rules" inline @search="onSearch" @reset="onReset">
             <template #state="{ row }">
                 <el-select v-model="row.state" filterable clearable>
-                    <el-option label="启用" :value="1" />
-                    <el-option label="禁用" :value="0" />
+                    <el-option v-for="(item,key) in stateData.statusList" :key="key" :label="item" :value="Number(key)" />
                 </el-select>
             </template>
             <template #time="{ row }">
@@ -151,18 +140,22 @@ initTableData(true)
                 <el-icon class="i-ep-folder-add mr2px">
                     <!-- <ele-FolderAdd /> -->
                 </el-icon>
-                新增分类
+                新增留言
             </el-button>
         </CoFormTool>
-        <CoTable v-model:option="tableData" auto-height row-key="id" border @refresh="initTableData">
+        <CoTable v-model:option="tableData" auto-height border @refresh="initTableData">
             <template #status="{ row }">
-                <el-tag v-if="row.status" type="primary">
-                    启用
-                </el-tag>
-                <el-tag v-else type="info">
-                    禁用
-                </el-tag>
-            </template>
+                    <el-tag v-if="row.status === 2" type="info">
+                        已完成
+                    </el-tag>
+                    <el-tag v-else-if="row.status === 1" type="warning">
+                        已沟通
+                    </el-tag>
+                    <el-tag v-else type="danger">
+                        未处理
+                    </el-tag>
+                </template>
+
             <template #operate="{ row }">
                 <el-button v-if="checkPermission('edit')" type="primary" link @click="onOpenDialog('edit', row)">
                     修改
@@ -174,7 +167,7 @@ initTableData(true)
             </template>
         </CoTable>
         <client-only>
-            <ClassifyModal ref="modalRef" :data="stateData.menuList" @update="initTableData(true)" />
+            <OperateModal ref="modalRef" title="留言" :list="stateData.statusList" @update="initTableData" />
         </client-only>
     </LayoutBox>
 </template>

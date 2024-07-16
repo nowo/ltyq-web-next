@@ -1,103 +1,96 @@
 <script lang="ts" setup>
-import type { Product, Prisma, Link } from '@prisma/client'
+import type { Recruit, Prisma, Link } from '@prisma/client'
 import type { CheckboxValueType, FormInstance, FormRules } from 'element-plus'
 
 
 const props = defineProps<{
-    // type: number
     title: string
-    list: any[]
 }>()
 
 const emits = defineEmits<{
     update: []
 }>()
 
-const lang = ref<LanguageType>('cn')
 const visible = ref(false)
-
+const lang = ref<LanguageType>('cn')
 const operate = ref<DialogOperate>()
 const comData = computed(() => {
-    if (operate.value === 'add') return { title: '新增产品' }
-    return { title: '修改产品' }
+    if (operate.value === 'add') return { title: `新增${props.title}` }
+    return { title: `修改${props.title}` }
 })
 const formRef = ref<FormInstance>()
 const form = reactive({
     data: {
         id: 0,
-        title: '',
-        title_en: '',
-        author: '',
-        describe: '',
-        describe_en: '',
+        title: '', // 菜单名称
+        title_en: '', // 菜单名称（英文）
+        address: '',
+        address_en: '',
+        people: '',
+        describe: '', // 简介
+        describe_en: '', // 简介
+
         content: '',
         content_en: '',
-
-        status: true, // 1:启用 0:禁用
-        isHot: false,
-        type: 4,
-        href:'',
-        img: [] as string[],
-        sort: 1,
+        status: true, // 是否首页显示，默认否
+        sort: 0, // 排序
     },
 })
 
 const rules = reactive<FormRules>({
-    account: [
-        { required: true, message: '必填项不能为空' },
-        { pattern: /^[0-9a-z]+$/i, message: '只能输入数字和英文' },
-        { min: 2, max: 16, message: '最少2个,最多16个字符' },
-    ],
+
     title: [
         { required: true, message: '必填项不能为空', whitespace: true },
 
     ],
     type: [
         { required: true, message: '必填项不能为空' },
-
     ],
     // email: [
     //     { required: true, message: 'Please input Activity name' },
     //     { min: 3, max: 5, message: 'Length should be 3 to 5' },
     // ],
-
-    role: [
-        { required: true, message: '必填项不能为空' },
-
-    ],
 })
 
 
-const openModal = (type: DialogOperate, row?: Link) => {
+const openModal = (type: DialogOperate, row?: Recruit) => {
     operate.value = type
-    if (type === 'edit') {
+    if (type === 'edit') { // 修改
 
+
+        form.data.id = row?.id || 0
         form.data.title = row?.title || ''
         form.data.title_en = row?.title_en || ''
+
+        form.data.address = row?.address || ''
+        form.data.address_en = row?.address_en || ''
+
+        form.data.people = row?.people || ''
+        form.data.describe = row?.describe || ''
+        form.data.describe_en = row?.describe_en || ''
+
         form.data.content = row?.content || ''
         form.data.content_en = row?.content_en || ''
-        // form.data.describe = row?.describe || ''
-        // form.data.describe_en = row?.describe_en || ''
 
+        form.data.status = !!row?.status
         form.data.sort = row?.sort || 0
-        form.data.status = row?.status ? true : false
-        form.data.id = row?.id || 0
-        form.data.type = row?.type ||4
-
     } else {
+
+        form.data.id = 0
         form.data.title = ''
         form.data.title_en = ''
+        form.data.address = ''
+        form.data.address_en = ''
+
+        form.data.people = ''
         form.data.describe = ''
         form.data.describe_en = ''
+
         form.data.content = ''
         form.data.content_en = ''
-        form.data.sort = 0
 
         form.data.status = true
-        form.data.isHot = false
-        form.data.id = 0
-
-        form.data.type = 4
+        form.data.sort = 0
     }
     visible.value = true
 }
@@ -114,28 +107,27 @@ const onCancel = () => {
 const [ApiFunc, btnLoading] = useLoadingSubmit()
 // 确定
 const onConfirm = useThrottleFn(async () => {
-    console.log(form.data.type)
+
     const isVerify = await useFormVerify(formRef.value)
     if (!isVerify) return
 
-   
-    const data: Prisma.LinkUncheckedCreateInput = {
+
+    const data: Prisma.RecruitUncheckedCreateInput = {
+        sort: Number(form.data.sort),
         title: form.data.title?.trim() ?? '',
         title_en: form.data.title_en?.trim() ?? '',
-        // author: form.data.author?.trim() ?? '',
-        // describe: form.data.describe?.trim() ?? '',
-        // describe_en: form.data.describe_en?.trim() ?? '',
+        describe: form.data.describe?.trim() ?? '',
+        describe_en: form.data.describe_en?.trim() ?? '',
         content: form.data.content?.trim() ?? '',
         content_en: form.data.content_en?.trim() ?? '',
-        img: '',
-        sort: form.data.sort || 0,
-        status: !!form.data.status,
-        type: Number(form.data.type),
-        href: form.data.img[0] ?? '',
+        status: form.data.status,
+        address: form.data.address || '',
+        address_en: form.data.address_en || '',
+        people: form.data.people || '',
     }
 
     if (operate.value === 'add') {
-        const res = await ApiFunc(useServerFetch('/api/v1/link/add', {
+        const res = await ApiFunc(useServerFetch('/api/v1/recruit/add', {
             method: 'POST',
             body: data,
         }))
@@ -146,7 +138,7 @@ const onConfirm = useThrottleFn(async () => {
             ...data,
             id: form.data.id,
         }
-        const res = await ApiFunc(useServerFetch('/api/v1/link/edit', {
+        const res = await ApiFunc(useServerFetch('/api/v1/message/edit', {
             method: 'POST',
             body: param,
         }))
@@ -168,51 +160,52 @@ defineExpose({
     <CoDrawer v-model="visible" :title="comData.title" :loading="btnLoading" :width="{ lg: 50, md: 75, sm: 80 }"
         @cancel="onCancel" @confirm="onConfirm">
         <el-form ref="formRef" :model="form.data" :rules="rules" label-width="110px">
-            <el-tabs v-model="lang" class="-mt10px">
+            <el-tabs v-model="lang" class="-mt15px">
                 <el-tab-pane label="中文" name="cn" />
                 <el-tab-pane label="英文" name="en" />
             </el-tabs>
 
-            <el-form-item v-if="lang === 'cn'" label="标题" prop="title">
-                <el-input v-model="form.data.title" maxlength="20" placeholder="请输入标题" clearable />
+            <el-form-item v-if="lang === 'cn'" label="岗位名称" prop="title">
+                <el-input v-model="form.data.title" maxlength="20" placeholder="请输入岗位名称" clearable />
             </el-form-item>
-            <el-form-item v-else-if="lang === 'en'" label="英文标题" prop="title_en">
-                <el-input v-model="form.data.title_en" maxlength="50" placeholder="请输入英文标题" clearable />
+            <el-form-item v-else-if="lang === 'en'" label="英文岗位名称" prop="title_en">
+                <el-input v-model="form.data.title_en" maxlength="50" placeholder="请输入英文岗位名称" clearable />
+            </el-form-item>
+            <el-form-item label="招聘人数" prop="people">
+                <el-input v-model="form.data.people" maxlength="30" placeholder="请输入招聘人数" clearable />
             </el-form-item>
 
-            <!-- <el-form-item v-if="lang === 'cn'" label="副标题" prop="sub_title">
-                <el-input v-model="form.data.sub_title" maxlength="20" placeholder="请输入副标题" clearable />
-            </el-form-item>
-            <el-form-item v-else-if="lang === 'en'" label="英文副标题" prop="sub_title_en">
-                <el-input v-model="form.data.sub_title_en" maxlength="50" placeholder="请输入英文副标题" clearable />
-            </el-form-item> -->
 
-            <!-- <el-form-item label="发布者" prop="author">
-                <el-input v-model="form.data.author" maxlength="30" placeholder="请输入名称" clearable />
-            </el-form-item> -->
-
-            <el-form-item label="文件上传" prop="img">
-                <CoUploadPhoto v-model="form.data.img" drag list-type="text" accept="*" />
-            </el-form-item>
 
             <template v-if="lang === 'cn'">
-                <el-form-item label="详细内容" prop="content">
+                <el-form-item label="工作地区" prop="address">
+                    <el-input v-model="form.data.address" maxlength="20" placeholder="请输入工作地区" clearable />
+                </el-form-item>
+                <el-form-item label="岗位描述" prop="describe">
+                    <CoEditor v-model="form.data.describe" placeholder="" clearable />
+                </el-form-item>
+                <el-form-item label="职责要求" prop="content">
                     <CoEditor v-model="form.data.content" />
                 </el-form-item>
             </template>
             <template v-else-if="lang === 'en'">
-                <el-form-item label="英文详细内容" prop="content_en">
+                <el-form-item label="英文工作地区" prop="address_en">
+                    <el-input v-model="form.data.address_en" maxlength="50" placeholder="请输入英文工作地区" clearable />
+                </el-form-item>
+                <el-form-item label="岗位描述" prop="describe_en">
+                    <CoEditor v-model="form.data.describe_en" placeholder="" clearable />
+                </el-form-item>
+                <el-form-item label="英文职责要求" prop="content_en">
                     <CoEditor v-model="form.data.content_en" />
                 </el-form-item>
             </template>
-
             <el-form-item label="状态" prop="status">
                 <el-radio-group v-model="form.data.status">
-                    <el-radio :value="true">
-                        显示
+                    <el-radio :label="true">
+                        开启
                     </el-radio>
-                    <el-radio :value="false">
-                        隐藏
+                    <el-radio :label="false">
+                        关闭
                     </el-radio>
                 </el-radio-group>
             </el-form-item>

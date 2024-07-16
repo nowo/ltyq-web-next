@@ -5,7 +5,7 @@ import type { GlobalComponents } from '@vue/runtime-core'
 // import type { GlobalComponents } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 import type { FormItemProps, InputProps, TableColumnCtx } from 'element-plus'
-import type { Menu, Classify, Link } from '@prisma/client'
+import type { Menu, Classify, Link,Product } from '@prisma/client'
 
 declare global {
     type ComponentInstance = {
@@ -58,38 +58,41 @@ declare global {
     /**
      * 产品列表 - 响应数据
      */
-    declare interface IGoodsGetListItem {
-
-        id: 1
-        title: 'S108B MiNi钳形漏电流表 '
-        title_en: string | null
-        sub_title: '钳形电流表'
-        sub_title_en: string | null
-        author: string | null
-        describe: string
-        describe_en: string | null
-        content: string
-        content_en: string | null
-        contrast: string
-        contrast_en: string | null
-        annex: string
-        annex_en: string | null
-        img: string | null
-        sort: 0
-        isHide: false
-        type: 0
-        read: 0
-        created_at: '2024-03-08T08:46:12.839Z'
-        updatedAt: '2024-03-08T08:46:12.839Z'
-        classifyId: 9
-        status:number
-
+    declare interface IGoodsGetListItem extends Product{
+        // id: 1
+        // title: 'S108B MiNi钳形漏电流表 '
+        // title_en: string | null
+        // sub_title: '钳形电流表'
+        // sub_title_en: string | null
+        // author: string | null
+        // describe: string
+        // describe_en: string | null
+        // content: string
+        // content_en: string | null
+        // contrast: string
+        // contrast_en: string | null
+        // annex: string
+        // annex_en: string | null
+        // img: string
+        // sort: 0
+        // isHide: false
+        // type: 0
+        // read: 0
+        // created_at: '2024-03-08T08:46:12.839Z'
+        // updatedAt: '2024-03-08T08:46:12.839Z'
+        // status:number
+        
+        classifyId: number
         classify: IClassifyListResponse
         links: Link[]
     }
 }
 
 declare module '#app' {
+    interface NuxtApp {
+        $lang (cn: string | null | undefined,en:string | null | undefined): string
+      }
+    
     interface PageMeta {
         title?: string // 页面标题、名称
         sort?: number // 排序

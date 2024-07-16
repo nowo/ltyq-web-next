@@ -15,7 +15,16 @@ export const getLinkList =defineEventHandler( async event => {
     const param = await getEventParams<{ type: number, title: string, goods_id: string } & IListPage>(event)
 
     if (!param?.type) return { msg: '请传递类型' }
-
+    // 1: '轮播图',
+    // 2: '产品图片',
+    // // 3:'',
+    // 4: '文档',
+    // 5: '视频',
+    // 6: '其他',
+    // 7: '外链',
+    // 8: '合作伙伴',
+    // 9: '公司介绍图',
+    // 10: '荣誉资质',
     const types = param?.type.toString().split(',').filter(item => !!item).map(item => Number(item))
     const where: Prisma.LinkWhereInput = {
         type: { in: types },
@@ -48,8 +57,8 @@ export const getLinkList =defineEventHandler( async event => {
     let pageSkip: number | undefined
 
     if (param?.isPage) {
-        page = param.page || 1
-        pageSize = param.pageSize || 20
+        page = Number(param.page || 1)
+        pageSize = Number(param.pageSize || 20)
         pageSkip = pageSize * (page - 1) || 0
     }
 

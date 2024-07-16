@@ -1,40 +1,30 @@
 import type { Prisma } from '@prisma/client'
-// import type { H3Event } from 'h3'
-// import { ResponseMessage } from '~/config/message'
 
-// news
-type FindListQueryParam = {
-    type: number
-    title: string
-    status?:1|0
-} & IListPage
+
+// banner
 
 /**
  * 列表查询
  * @param event
  * @returns
  */
-export const getRecruitList = defineEventHandler(async event => {
-    // const url = getRequestURL(event)
-    // // /api/page**的接口，跳过登录校验
-    // if (!url.pathname.includes('/api/page')) {
-    //     // 接口校验(是否登录)
-    //     if (!event.context.user) return ResponseMessage.token
-    // }
+export const getMessageList = defineEventHandler( async event => {
+    // 接口校验(是否登录)
+    // if (!event.context.user) return ResponseMessage.token
 
     // 获取参数
-    const param = await getEventParams<FindListQueryParam>(event)
+    const param = await getEventParams<{ status: number, title: string } & IListPage>(event)
 
     // if (!param?.type) return { msg: '请传递类型' }
-    const where: Prisma.RecruitWhereInput = {
-        // classifyId,
-        title: {
-            contains: param?.title, // 包含
-        },
+
+    // const types = param?.type.toString().split(',').filter(item => !!item).map(item => Number(item))
+    const where: Prisma.MessageWhereInput = {
+        // type: { in: types },
+        // isHide: false,
     }
 
-    if (param?.status === 1) where.status = true
-    else if (param?.status === 0) where.status = false
+    if (param?.title) where.title = { contains: param.title }
+    if (param?.status) where.status = Number(param.status)
 
     // 查询菜单姓"张"，1页显示20条
     let page: number | undefined
@@ -42,29 +32,27 @@ export const getRecruitList = defineEventHandler(async event => {
     let pageSkip: number | undefined
 
     if (param?.isPage) {
-        page = Number(param.page) || 1
-        pageSize = Number(param.pageSize) || 20
+        page = Number(param.page || 1)
+        pageSize = Number(param.pageSize || 20)
         pageSkip = pageSize * (page - 1) || 0
     }
-    // console.log('where :>> ', where)
+
     const [res1, res2] = await Promise.all([
-        prisma.recruit.findMany({
+        prisma.message.findMany({
             skip: pageSkip,
             take: pageSize,
             where,
-            orderBy: [
-                {
-                    sort: 'desc', // 按id正序排序
-                },
-                {
-                    createdAt: 'desc', // 按id正序排序
-                }
-            ],
+            orderBy: {
+                createdAt: 'desc', // 按id正序排序
+            },
             // include: {
-            //     links: true,
-            //     classify: {
-            //         select: {
-            //             title: true,
+            //     Product: {
+            //         include: {
+            //             links: {
+            //                 where: {
+            //                     type: 1,
+            //                 },
+            //             },
             //         },
             //     },
             // },
@@ -73,13 +61,13 @@ export const getRecruitList = defineEventHandler(async event => {
             //     account: true,
             // },
         }),
-        prisma.recruit.count({
+        prisma.message.count({
             where,
         }),
     ])
-
+    const list = res1
     if (res1) {
-        return { code: 200, data: { list: res1, total: res2 } }
+        return { code: 200, data: { list, total: res2 } }
     } else {
         return { code: 400, message: '查询失败' }
     }
@@ -90,19 +78,23 @@ export const getRecruitList = defineEventHandler(async event => {
  * @param event
  * @returns
  */
-export const setRecruitCreate = defineEventHandler(async event=> {
+export const setMessageCreate =defineEventHandler( async event => {
+    // const url = getRequestURL(event)
+    // // /api/page**的接口，跳过登录校验
+    // if (!url.pathname.includes('/api/page')) {
+    //     // 接口校验(是否登录)
+    //     if (!event.context.user) return ResponseMessage.token
+    // }
     // 接口校验(是否登录)
     // if (!event.context.user) return ResponseMessage.token
 
     // 获取参数
-    const param = await getEventParams<Prisma.RecruitCreateInput>(event)
+    const param = await getEventParams<Prisma.MessageCreateInput>(event)
 
     if (!param?.title) return { msg: '名称不能为空' }
 
-    const res = await prisma.recruit.create({
-        data: {
-            ...param,
-        },
+    const res = await prisma.message.create({
+        data: param,
     })
 
     if (res) {
@@ -117,22 +109,20 @@ export const setRecruitCreate = defineEventHandler(async event=> {
  * @param event
  * @returns
  */
-export const setRecruitUpdate = defineEventHandler(async event => {
+export const setMessageUpdate =defineEventHandler( async event => {
     // 接口校验(是否登录)
     // if (!event.context.user) return ResponseMessage.token
 
     // 获取参数
-    const param = await getEventParams<Prisma.RecruitUncheckedUpdateInput>(event)
+    const param = await getEventParams<{ id: number } & Prisma.MessageUpdateInput>(event)
 
     if (!param?.id) return { msg: '缺少参数id' }
     if (!param?.title) return { msg: '标题不能为空' }
 
-    const res = await prisma.recruit.update({
-        data: {
-            ...param,
-        },
+    const res = await prisma.message.update({
+        data: param,
         where: {
-            id: param.id as number,
+            id: param.id,
         },
     })
 
@@ -148,7 +138,7 @@ export const setRecruitUpdate = defineEventHandler(async event => {
  * @param event
  * @returns
  */
-export const setRecruitDelete =defineEventHandler( async event => {
+export const setMessageDelete =defineEventHandler( async event => {
     // 接口校验(是否登录)
     // if (!event.context.user) return ResponseMessage.token
 
@@ -157,7 +147,7 @@ export const setRecruitDelete =defineEventHandler( async event => {
 
     if (!param?.id) return { msg: '缺少参数id' }
 
-    const res = await prisma.recruit.delete({
+    const res = await prisma.message.delete({
         where: {
             id: param.id,
         },

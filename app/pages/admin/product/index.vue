@@ -51,7 +51,7 @@ const rules = reactive<FormRules>({
     money: [],
 })
 
-const tableData = reactive<CoTableProps<Product>>({
+const tableData = reactive<CoTableProps<IGoodsGetListItem>>({
     data: [],
     tableHeader: [
         { property: 'id', label: 'id', width: '50' },
@@ -84,7 +84,7 @@ const initTableData = async () => {
         pageSize: tableData.pagination.pageSize,
     }
     tableData.loading = true
-    const res = await useServerFetch<{ list: Product[], total: number }>('/api/v1/product/list', {
+    const res = await useServerFetch<{ list: IGoodsGetListItem[], total: number }>('/api/v1/product/list', {
         method: 'post',
         body: params,
     })
@@ -107,12 +107,12 @@ const onReset = () => {
 }
 
 // 打开新增、修改
-const onOpenDialog = (type: DialogOperate, row?: Product) => {
+const onOpenDialog = (type: DialogOperate, row?: IGoodsGetListItem) => {
     modalRef.value?.openModal(type, row)
 }
 
 // 删除用户
-const onDel = (row: Product) => {
+const onDel = (row: IGoodsGetListItem) => {
     ElMessageBox.confirm(`此操作将永久删除该条内容，是否继续?`, '提示', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
@@ -169,7 +169,7 @@ initTableData()
                 <el-button v-if="checkPermission('edit')" type="primary" link @click="onOpenDialog('edit', row)">
                     修改
                 </el-button>
-                <el-button v-if="checkPermission('del')" type="danger" link :disabled="row.id === 1"
+                <el-button v-if="checkPermission('del')" type="danger" link
                     @click="onDel(row)">
                     删除
                 </el-button>

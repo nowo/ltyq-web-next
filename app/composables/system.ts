@@ -1,5 +1,5 @@
 import type { Admin, Prisma } from "@prisma/client"
-import { filterTreeList } from '@cooj/utils'
+import { filterTreeList,findTreeNodeItem } from '@cooj/utils'
 /**
  * 设置用户登录信息，token相关
  * @returns user information
@@ -142,11 +142,11 @@ export const useMenuState = async () => {
     })
 
     // 当前页菜单内容
-    const nowMenu = computed<IMenuListItem[] | undefined>(() => {
+    const nowMenu = computed<IMenuListItem | undefined>(() => {
         // [id].vue 的文件，不能直接拿route.path来进行比较
-        const path = route.matched?.[0]?.path.split('/:')[0]
-        return []
-        // return findTreeNodeItem(allList.value, path, 'href', 'children')
+        const path = route.matched?.[0]?.path.split('/:')[0]||''
+        // return []
+        return findTreeNodeItem(allList.value, path, 'href', 'children')
     })
 
     return {

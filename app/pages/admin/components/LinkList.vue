@@ -1,31 +1,44 @@
 <script setup lang="ts">
 import type { Link } from '@prisma/client'
 import type { FormRules } from 'element-plus'
-import OperateModal from './DownloadModal.vue'
+import OperateModal from './LinkModal.vue'
 
-definePageMeta({
-    layout: 'admin',
-    title: '产品列表',
-    icon: 'i-ep-user',
-    sort: 10,
-    // keepalive: true
-    permissionList: {
-        add: '新增',
-        edit: '编辑',
-        del: '删除',
-        // view: '删除',
-        // read: '删除',
-    },
-})
+
+const props = defineProps<{
+    type: number | string
+    title: string
+    key?: 'download' | 'about'
+}>()
+
+provide('propsData',props)
 
 const modalRef = ref<InstanceType<typeof OperateModal>>()
-const stateData=reactive({
-    typeList:{
-        4:'文档',
-        5:'视频',
-        6:'其他'
+const stateData = reactive({
+    typeList: {
+        1: '轮播图',
+        2: '产品图片',
+        // 3:'',
+        4: '文档',
+        5: '视频',
+        6: '其他',
+        7: '外链',
+        8: '合作伙伴',
+        9: '公司介绍图',
     }
 })
+
+const typeData = computed(() => {
+    let dat: Record<string | number, string> = {}
+    if (props.key === 'download') {
+        dat = {
+            4: '文档',
+            5: '视频',
+            6: '其他',
+        }
+    }
+    return dat
+})
+
 // form表单数据类型
 interface FormSearchData {
     type: '' // 账号
@@ -44,7 +57,7 @@ const searchData = reactive<CoFormToolProps<FormSearchData>>({
     },
     config: [
         { column: { label: '标题名称', prop: 'title' }, placeholder: '', width: '160' },
-        { column: { label: '文件类型', prop: 'type' }, placeholder: '', width: '130' },
+        { column: { label: '类型', prop: 'type' }, placeholder: '', width: '130',isHide: props.key !== 'download' },
         { column: { label: '状态', prop: 'state' }, placeholder: '', width: '100' },
         { column: { label: '日期范围', prop: 'time' } },
     ],
@@ -59,14 +72,15 @@ const rules = reactive<FormRules>({
 const tableData = reactive<CoTableProps<Link>>({
     data: [],
     tableHeader: [
-        { property: 'id', label: 'id', width: '50' },
+        { property: 'id', label: 'id', width: '80' },
 
         { property: 'title', label: '标题名称', minWidth: '180' },
         { property: 'title_en', label: '英文标题名称', width: '180' },
-        // { property: 'img', label: '图片', width: '160', align: 'center' },
-        { property: 'type', label: '类型', width: '160', align: 'center' },
+        { property: 'img', label: '图片', width: '150', align: 'center' },
+        { property: 'href', label: '链接地址', minWidth: '150' },
+        { property: 'type', label: '类型', width: '160', align: 'center', other: { isHide: props.key !== 'download' } },
         // { property: 'status姓名', width: '180' },
-        { property: 'status', label: '状态', align: 'center', width: '100' },
+        { property: 'status', label: '状态', align: 'center', width: '90' },
         { property: 'created_at', label: '创建时间', width: '220' },
         // { property: 'update_at', label: '更新时间', width: '180' },
         // { property: 'remark', label: '备注', width: '180' },
@@ -78,19 +92,17 @@ const tableData = reactive<CoTableProps<Link>>({
 })
 
 
-const {classifyList} =await useGoodsClassifyState()
-
 const initTableData = async () => {
     const params = {
         // account: searchData.data.account?.trim() ?? '',
         title: searchData.data.title?.trim() ?? '',
-        status: searchData.data.state || '',
-        type:searchData.data.type || '',
+        status: searchData.data.state,
+        type: searchData.data.type || '',
         isPage: true,
         page: tableData.pagination.page,
         pageSize: tableData.pagination.pageSize,
     }
-    if(!searchData.data.type) params.type='4,5,6'
+    if (!searchData.data.type) params.type = props.type.toString()
     tableData.loading = true
     const res = await useServerFetch<{ list: Link[], total: number }>('/api/v1/link/list', {
         method: 'post',
@@ -115,7 +127,7 @@ const onReset = () => {
 }
 
 // 打开新增、修改
-const onOpenDialog = (type: DialogOperate, row?: IGoodsGetListItem) => {
+const onOpenDialog = (type: DialogOperate, row?: Link) => {
     modalRef.value?.openModal(type, row)
 }
 
@@ -145,10 +157,15 @@ initTableData()
 <template>
     <LayoutBox>
         <CoFormTool v-model:option="searchData" :rules="rules" inline @search="onSearch" @reset="onReset">
+            <template #type="{ row }">
+                <el-select v-model="row.type" filterable clearable>
+                    <el-option v-for="(item, index) in typeData" :key="index" :label="item" :value="index" />
+                </el-select>
+            </template>
             <template #state="{ row }">
                 <el-select v-model="row.state" filterable clearable>
                     <el-option label="启用" :value="1" />
-                    <el-option label="禁用" :value="2" />
+                    <el-option label="禁用" :value="0" />
                 </el-select>
             </template>
             <template #time="{ row }">
@@ -158,10 +175,14 @@ initTableData()
                 <el-icon class="i-ep-folder-add mr2px">
                     <!-- <ele-FolderAdd /> -->
                 </el-icon>
-                新增文件
+                新增{{ props.title }}
             </el-button>
         </CoFormTool>
         <CoTable v-model:option="tableData" auto-height border @refresh="initTableData">
+            <template #img="{ row }">
+                <CoImage :src="row.img" :icon-size="28" :preview-src-list="[row.img]" preview-teleported
+                        fit="contain" class="ma h50px w100px block!"  />
+            </template>
             <template #status="{ row }">
                 <el-tag v-if="row.status" type="primary">
                     启用
@@ -171,20 +192,20 @@ initTableData()
                 </el-tag>
             </template>
             <template #type="{ row }">
-                {{stateData.typeList[row.type as 4]}}
+                {{ typeData[row.type as 4] }}
             </template>
             <template #operate="{ row }">
                 <el-button v-if="checkPermission('edit')" type="primary" link @click="onOpenDialog('edit', row)">
                     修改
                 </el-button>
-                <el-button v-if="checkPermission('del')" type="danger" link :disabled="row.id === 1"
+                <el-button v-if="checkPermission('del')" type="danger" link
                     @click="onDel(row)">
                     删除
                 </el-button>
             </template>
         </CoTable>
         <client-only>
-            <OperateModal ref="modalRef" title="文件" :list="classifyList" @update="initTableData" />
+            <OperateModal ref="modalRef" :list="typeData" @update="initTableData" />
         </client-only>
     </LayoutBox>
 </template>

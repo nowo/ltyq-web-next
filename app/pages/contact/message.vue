@@ -3,69 +3,91 @@
         <CiSubMenu />
 
         <!-- 留言框 -->
-        <div class="width_box join_top">
-            <div class="join_explain" v-html="$lang(data?.content, data?.content_en)" />
-            <form id="form" onsubmit="return false" method="post" class="join_module">
-                <div class="join_box">
-                    <ul class="join_ul">
-                        <li class="join_list">
-                            <input v-model="form.name" name="customName" type="text"
-                                :placeholder="$lang('您的名字', 'Name') || ''">
-                            <!-- <div><img src="assets/image/icon_join1.png" alt=""></div> -->
-                        </li>
-                        <li class="join_list">
-                            <input v-model="form.phone" name="mobile" type="text"
-                                :placeholder="$lang('您的电话', 'Phone') || ''">
-                            <!-- <div><img src="assets/image/icon_join2.png" alt=""></div> -->
-                        </li>
-                        <li class="join_list">
-                            <input v-model="form.email" name="email" type="email"
-                                :placeholder="$lang('您的邮箱', 'Email') || ''">
-                            <!-- <div><img src="assets/image/icon_join3.png" alt=""></div> -->
-                        </li>
-                        <li class="join_list">
-                            <input v-model="form.address" name="address" class="address" type="text"
-                                :placeholder="$lang('所在地区', 'Address') || ''">
-                            <!-- <div class="city_btn"><img src="/template/home/static/img/img/icon_join4.png" alt=""></div> -->
-                        </li>
-                    </ul>
-                    <div class="join_img">
-                        <img :src="data?.img || ''" alt="">
+        <div class="container ma px10px py50px">
+            <div class="mb30px" v-html="$lang(comData?.content, comData?.content_en)" />
+            <el-form class="form-box" ref="formRef" :model="form" :rules="rules" size="large" label-position="top">
+                <div class="flex justify-between">
+                    <div class="w48%">
+                        <el-form-item label="" prop="name">
+                            <el-input v-model="form.name" :placeholder="$lang('您的名字', 'Name') || ''">
+                                <template #suffix>
+                                    <i class="i-ep-user text-28px" />
+                                </template>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item label="" prop="phone">
+                            <el-input v-model="form.phone" :placeholder="$lang('您的电话', 'Phone') || ''">
+                                <template #suffix>
+                                    <i class="i-ep-phone text-28px" />
+                                </template>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item label="" prop="email">
+                            <el-input v-model="form.email" type="email" :placeholder="$lang('您的邮箱', 'Email') || ''">
+                                <template #suffix>
+                                    <i class="i-ep-message text-28px" />
+                                </template>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item label="" prop="address">
+                            <el-input v-model="form.address" :placeholder="$lang('所在地区', 'Address') || ''">
+                                <template #suffix>
+                                    <i class="i-ep-location text-28px" />
+                                </template>
+                            </el-input>
+                        </el-form-item>
+                    </div>
+                    <div class="w48% mb30px">
+                        <img :src="comData?.img || ''" alt="" class="w100% h100% object-cover">
                     </div>
                 </div>
-                <textarea v-model="form.note" name="note" class="join_remark"
-                    :placeholder="$lang('备注', 'Remark') || ''" />
-                <div class="join_base">
-                    <div class="join_list">
-                        <input v-model="form.verifyCode" name="verifyCode" type="text"
-                            :placeholder="$lang('验证码', 'Code') || ''">
-                        <div class="select-none pl5px text-28px tracking-8px font-[fantasy]" @click="setVerifyCode">
-                            <ClientOnly>{{ code }}</ClientOnly>
-                            <!-- <a href="javascript:changeVerifyCode()"><img id="verifyCodeImg" src="" alt=""></a> -->
-                        </div>
-                    </div>
-                    <a class="join_submit" @click="onSubmit">{{ $lang('提交申请', 'Submit') }}</a>
-                </div>
-            </form>
+                <el-form-item label="" prop="note">
+                    <el-input v-model="form.note" type="textarea" :rows="10" :placeholder="$lang('备注', 'Remark') || ''">
+                    </el-input>
+                </el-form-item>
+
+                <el-row :gutter="30">
+                    <el-col :xs="24" :sm="24" :md="14" :lg="16" :xl="15">
+                        <el-form-item label="" prop="verifyCode">
+                            <el-input v-model="form.verifyCode" :placeholder="$lang('验证码', 'Code') || ''">
+                                <template #suffix>
+                                    <span
+                                        class="select-none text-28px tracking-8px font-[fantasy] c-#000 cursor-pointer"
+                                        @click="setVerifyCode">
+                                        <ClientOnly>{{ code }}</ClientOnly>
+                                    </span>
+                                </template>
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :xs="24" :sm="24" :md="10" :lg="8" :xl="9">
+                        <el-button class="w100%" type="primary" :loading="btnLoading" @click="onSubmit">
+                            {{ $lang('提交申请', 'Submit') }}
+                        </el-button>
+                    </el-col>
+                </el-row>
+            </el-form>
         </div>
     </section>
 </template>
 
 <script lang="ts" setup>
-import type { Prisma } from '@prisma/client'
+import type { FormRules, FormInstance } from 'element-plus'
+import type { Other, Prisma } from '@prisma/client'
 
 const { $lang } = useNuxtApp()
 
 definePageMeta({
     layout: 'home',
 })
-const { systemInfo } = await useSystemState()
 
-const { data } = await useCustomFetch<Prisma.OtherMaxAggregateOutputType>('/api/page/other', {
+
+const { data } = await useCustomFetch<Other>('/api/v1/page/other', {
     params: {
         type: 'message',
     },
 })
+const comData = data.value?.data
 
 function generateRandomString(length: number): string {
     const characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz123456789'
@@ -79,8 +101,8 @@ function generateRandomString(length: number): string {
     return result
 }
 
-const disabled = ref(false)
 const code = ref(generateRandomString(4))
+const formRef = ref<FormInstance>()
 const form = reactive({
     name: '',
     phone: '',
@@ -90,80 +112,83 @@ const form = reactive({
     verifyCode: '',
 })
 
+
+const rules = reactive<FormRules>({
+    name: [ // 菜单名称
+        { required: true, whitespace: true, message: $lang('请输入姓名', 'Please enter your name'), trigger: 'blur' },
+    ],
+    phone: [ // 菜单名称
+        { required: true, whitespace: true, message: $lang('请输入电话', 'Please enter your phone'), trigger: 'blur' },
+    ],
+    email: [
+        { required: true, whitespace: true, message: $lang('请输入邮箱', 'Please enter your email'), trigger: 'blur' },
+    ],
+    address: [ // 图片
+        { required: true, message: $lang('请输入所在地区', 'Please enter your address'), trigger: 'blur' },
+    ],
+    note: [ // 图片
+        { required: true, message: $lang('请输入备注', 'Please enter your remark'), trigger: 'blur' },
+    ],
+    verifyCode: [ // 图片
+        { required: true, message: $lang('请输入验证码', 'Verification code error'), trigger: 'blur' },
+    ],
+})
+
 const setVerifyCode = () => {
     code.value = generateRandomString(4)
 }
 
-const verifyArr = ref<(keyof typeof form)[]>([])
-const verifyForm = (list: { label: keyof typeof form, msg: string }[]) => {
-    verifyArr.value = []
 
-    list.forEach((item) => {
-        if (!form[item.label]?.trim()) {
-            verifyArr.value.push(item.label)
-            ElMessage.error(item.msg)
-        }
-    })
-    return verifyArr.value.length === 0
-}
 const msgCode = $lang('验证码错误', 'Verification code error') || ''
 const msgSuccess = $lang('提交成功', 'Submit success') || ''
 
-const verifyList: { label: keyof typeof form, msg: string }[] = [
-    {
-        label: 'name',
-        msg: $lang('请输入姓名', 'Please enter your name') || '',
-    },
-    {
-        label: 'phone',
-        msg: $lang('请输入电话', 'Please enter your phone') || '',
-    },
-    {
-        label: 'email',
-        msg: $lang('请输入邮箱', 'Please enter your email') || '',
-    },
-    {
-        label: 'address',
-        msg: $lang('请输入所在地区', 'Please enter your address') || '',
-    },
-    {
-        label: 'note',
-        msg: $lang('请输入备注', 'Please enter your remark') || '',
-    },
-]
 
+const [ApiFunc, btnLoading] = useLoadingSubmit()
 const onSubmit = async () => {
-    if (disabled.value) return false
 
-    const isVerify = verifyForm(verifyList)
+    const isVerify = await useFormVerify(formRef.value)
+    if (!isVerify) return
 
     if (form.verifyCode?.trim()?.toLowerCase() !== code.value.toLowerCase()) return ElMessage.error(msgCode)
-    if (!isVerify) return false
-    disabled.value = true
-    const { data, error } = await useCustomFetch<{ code: number }>('/api/page/message', {
-        params: {
-            title: form.name?.trim() ?? '',
-            phone: form.phone?.trim() ?? '',
-            email: form.email?.trim() ?? '',
-            address: form.address?.trim() ?? '',
-            content: form.note?.trim() ?? '',
-        },
-    })
-    disabled.value = false
-    if (error.value) return false
-    if (data.value?.code === 200) {
+
+    const param: Prisma.MessageCreateInput = {
+        title: form.name?.trim() ?? '',
+        phone: form.phone?.trim() ?? '',
+        email: form.email?.trim() ?? '',
+        address: form.address?.trim() ?? '',
+        content: form.note?.trim() ?? '',
+    }
+
+    const res = await ApiFunc(useServerFetch<{ code: number }>('/api/v1/page/message', {
+        method: 'POST',
+        body: param,
+    }))
+
+    if (res.code === 200) {
         ElMessage.success(msgSuccess)
-        form.name = ''
-        form.phone = ''
-        form.email = ''
-        form.address = ''
-        form.note = ''
-        form.verifyCode = ''
+        formRef.value?.resetFields()
+        // form.name = ''
+        // form.phone = ''
+        // form.email = ''
+        // form.address = ''
+        // form.note = ''
+        // form.verifyCode = ''
         setVerifyCode()
     }
 }
 </script>
 
 <style lang="scss" scoped>
-@import url('@/assets/css/message.css');
+.form-box {
+    --el-component-size-large: 60px;
+
+    :deep(.el-form-item--large) {
+        margin-bottom: 30px;
+    }
+
+    :deep(.el-button--large) {
+        --el-font-size-base: 20px;
+        --el-button-size: var(--el-component-size-large);
+    }
+}
 </style>

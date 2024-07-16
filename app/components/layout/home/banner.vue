@@ -11,9 +11,9 @@
                 :slides-per-view="1" :loop="true" :autoplay="{ delay: 8000, disableOnInteraction: true }"
                 :pagination="{ clickable: true }">
                 <!-- navigation effect="creative" :creative-effect="effect" -->
-                <SwiperSlide v-for="(item, idx) in banner" :key="idx" class="w100%">
+                <SwiperSlide v-for="(item, idx) in bannerList" :key="idx" class="w100%">
                     <NuxtLinkLocale :to="item.href" class="banner-link">
-                        <img :src="item.img" :alt="item.title">
+                        <img :src="item.img || ''" :alt="item.title || ''">
                     </NuxtLinkLocale>
                 </SwiperSlide>
             </Swiper>
@@ -21,7 +21,7 @@
             <template v-else>
                 <!-- banner图 -->
                 <div class="banner_img">
-                    <img :src="activeMenu?.img" class="w100%" alt="">
+                    <img :src="activeMenu?.img || ''" class="w100%" alt="">
                 </div>
 
                 <!-- 面包屑 -->
@@ -31,10 +31,10 @@
                         <ClientOnly>
                             <el-breadcrumb :separator-icon="ArrowRight" class="bread-box">
                                 <el-breadcrumb-item>
-                                    <i class="i-ep-home-filled mr10px inline-block align-start" /> 
+                                    <i class="i-ep-home-filled mr10px inline-block align-start" />
                                     <NuxtLinkLocale to="/">
                                         <!-- {{ $t('home') }} -->
-                                       {{ $lang('首页', 'Home') }}
+                                        {{ $lang('首页', 'Home') }}
                                     </NuxtLinkLocale>
                                 </el-breadcrumb-item>
                                 <el-breadcrumb-item>
@@ -52,9 +52,11 @@
 </template>
 
 <script lang="ts" setup>
-import type {Link} from '@prisma/client'
+import type { Link } from '@prisma/client'
 import { ArrowRight } from '@element-plus/icons-vue'
-const { activeMenu, menuList } =await useMenuState()
+const { $lang } = useNuxtApp()
+
+const { activeMenu, menuList } = await useMenuState()
 // :creative-effect="{
 //             prev: {
 //                 shadow: false,
@@ -73,13 +75,14 @@ const effect = {
     next: { translate: ['100%', 0, 0] },
 }
 
-const { data: banner } = await useCustomFetch<{list:Link[]}>('/api/v1/page/banner', {
+const { data: banner } = await useCustomFetch<{ list: Link[] }>('/api/v1/page/banner', {
     method: 'post',
     body: {
         type: 1,
         isPage: 1,
     },
 })
+const bannerList = banner.value?.data.list || []
 </script>
 
 <style lang="scss" scoped>

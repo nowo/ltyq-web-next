@@ -2,35 +2,36 @@
     <section>
         <!-- 分类 -->
         <CiSubMenu />
-        <article class="width_box explain_module">
-            <div class="pb50px">
+        <article class="container ma px10px">
+            <div class="py50px">
                 <div class="lh-32px">
-                    <strong>{{ $lang(data?.title, data?.title_en) }}</strong>
+                    <strong>{{ $lang(comData?.title, comData?.title_en) }}</strong>
                     <br>
-                    <strong>{{ $lang(data?.subtitle, data?.subtitle_en) }}</strong>
+                    <strong>{{ $lang(comData?.subtitle, comData?.subtitle_en) }}</strong>
                 </div>
-                <div v-html="$lang(data?.content, data?.content_en)" />
+                <div v-html="$lang(comData?.content, comData?.content_en)" />
             </div>
         </article>
     </section>
 </template>
 
 <script lang="ts" setup>
-import type { Prisma } from '@prisma/client'
+import type { Other } from '@prisma/client'
+const { $lang } = useNuxtApp()
 
 definePageMeta({
     layout: 'home',
 })
 
-const { data } = await useCustomFetch<Prisma.OtherMaxAggregateOutputType>('/api/page/other', {
+const { data } = await useCustomFetch<Other>('/api/v1/page/other', {
     params: {
         type: 'service-mend',
     },
 })
+
+const comData=data.value?.data
 </script>
 
 <style lang="scss" scoped>
-.explain_module{
-    margin-top: 25px;
-}
+
 </style>

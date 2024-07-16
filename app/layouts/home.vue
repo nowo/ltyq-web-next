@@ -14,7 +14,5 @@ import '~/assets/scss/base.scss'
 </template>
 
 <style lang="scss">
-:root{
-    --el-color-primary:var(--ci-main-color);
-}
+
 </style>

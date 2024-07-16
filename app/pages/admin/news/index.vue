@@ -6,7 +6,7 @@ import OperateModal from './components/OperateModal.vue'
 definePageMeta({
     layout: 'admin',
     title: '新闻列表',
-    icon: 'i-ep-user',
+    icon: 'i-ep-memo',
     sort: 12,
     // keepalive: true
     permissionList: {
@@ -19,10 +19,10 @@ definePageMeta({
 })
 
 const modalRef = ref<InstanceType<typeof OperateModal>>()
-const stateData=reactive({
-    typeList:[
-        {title:'公司新闻',id:1},
-        {title:'行业新闻',id:2},
+const stateData = reactive({
+    typeList: [
+        { title: '公司新闻', id: 1 },
+        { title: '行业新闻', id: 2 },
     ]
 })
 
@@ -64,10 +64,10 @@ const tableData = reactive<CoTableProps<News>>({
         { property: 'title', label: '标题名称', minWidth: '180' },
         { property: 'title_en', label: '英文标题名称', width: '180' },
         // { property: 'role', label: '角色名称', width: '130', align: 'center' },
-        { property: 'type',label:'类型', align: 'center', width: '180' },
+        { property: 'type', label: '类型', align: 'center', width: '180' },
         { property: 'sort', label: '排序', width: '180' },
         { property: 'status', label: '状态', align: 'center', width: '100' },
-        { property: 'created_at', label: '创建时间', width: '220' },
+        { property: 'createdAt', label: '创建时间', width: '220' },
         // { property: 'update_at', label: '更新时间', width: '180' },
         { property: 'operate', label: '操作', width: '120', align: 'center', fixed: 'right' },
 
@@ -93,7 +93,7 @@ const initTableData = async () => {
     tableData.loading = false
 
     if (res.code !== 200) return ElMessage.error(res.msg)
-// console.log(res)
+    // console.log(res)
     tableData.data = res.data.list
     tableData.pagination.total = res.data.total || 0
 }
@@ -179,8 +179,7 @@ initTableData()
                 <el-button v-if="checkPermission('edit')" type="primary" link @click="onOpenDialog('edit', row)">
                     修改
                 </el-button>
-                <el-button v-if="checkPermission('del')" type="danger" link 
-                    @click="onDel(row)">
+                <el-button v-if="checkPermission('del')" type="danger" link @click="onDel(row)">
                     删除
                 </el-button>
             </template>

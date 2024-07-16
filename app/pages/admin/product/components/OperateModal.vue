@@ -35,7 +35,7 @@ const form = reactive({
 
         status: true, // 1:启用 0:禁用
         isHot: false,
-        type: '',
+        type: '' as number | '',
         describe: '',
         describe_en: '',
         content: '',
@@ -108,7 +108,7 @@ const onRemoveItem = (row: Link) => {
     if (index >= 0) form.data.links.splice(index, 1)
 }
 
-const openModal = (type: DialogOperate, row?: Product & { links: Link[] }) => {
+const openModal = (type: DialogOperate, row?: IGoodsGetListItem) => {
     operate.value = type
     if (type === 'edit') {
 
@@ -126,8 +126,8 @@ const openModal = (type: DialogOperate, row?: Product & { links: Link[] }) => {
         form.data.status = row?.status ? true : false
         form.data.isHot = row?.isHot ? true : false
         form.data.id = row?.id || 0
-        form.data.type = row?.classifyId ||''
-        const imgs = row?.links?.filter(item => item.type === 2).map(item => item.img)
+        form.data.type = row?.classifyId || ''
+        const imgs = row?.links?.filter(item => item.type === 2 && item.img).map(item => item.img as string)
         form.data.img = imgs || []
         const links = row?.links?.filter(item => item.type === 3).map((item) => {
             let link: Link = {

@@ -1,4 +1,4 @@
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin((nuxtApp) => {
     return {
         provide: {
             lang: (cn: string | null | undefined, en: string | null | undefined) => {

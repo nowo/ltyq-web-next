@@ -2,17 +2,17 @@
 import OtherIndex from './components/OtherIndex.vue'
 definePageMeta({
     layout: 'admin',
-    title: '后台主页',
-    icon: 'i-ep-home-filled',
-    sort: -999,
-    fixed: true,
-    isAffix: true,
+    title: '人才招聘',
+    icon: 'i-ep-list',
+    sort: 25,
+    // fixed: true,
+    // isAffix: true,
 })
 
 </script>
 
 <template>
-    <OtherIndex type="banner" />
+    <OtherIndex type="recruit" />
 </template>
 
 <style scoped lang="scss">

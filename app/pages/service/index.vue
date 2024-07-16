@@ -4,30 +4,30 @@
         <CiSubMenu />
 
         <!-- 下载列表 -->
-        <div class="width_box download_module">
+        <div class="container ma px10px">
             <!-- 分类 -->
-            <div class="filter_module">
-                <a v-for="(item, key) in typeList" :key="key" class="cursor-pointer"
-                    :class="{ filter_active: type === Number(key) }" @click="setFileType(key)">{{ item }}</a>
+            <div class="flex justify-center gap-30px py30px">
+                <a v-for="(item, key) in typeList" :key="key" class="cursor-pointer text-16px c-#666"
+                    :class="{ '!c-[--ci-main-color]': type === Number(key) }" @click="setFileType(key)">{{ item }}</a>
             </div>
 
             <!-- 列表 -->
-            <ul class="download_ul min-h-300px">
+            <ul class="download-ul min-h-300px">
                 <ClientOnly>
-                    <li v-for="opt in productData.list" :key="opt.id" class="download_li">
-                        <h1 class="download_name">
+                    <li v-for="opt in productData.list" :key="opt.id" class="item">
+                        <h1 class="tle">
                             {{ $lang(opt.title, opt.title_en) }}
                         </h1>
-                        <CoImage class="download_img w100% pb100%" :src="opt.img" />
-                        <p class="download_info">
+                        <CoImage class="download_img w100% pb100%" :src="opt.img" :icon-size="36" />
+                        <!-- <p class="download_info">
                             {{ $lang(opt.content, opt.content_en) }}
-                        </p>
-                        <div class="download_base">
-                            <p class="download_date">
-                                {{ formatTime(new Date(opt!.createdAt)) }}
+                        </p> -->
+                        <div class="flex justify-between items-center">
+                            <p class="text-16px c-#777">
+                                {{ formatTime(new Date(opt!.created_at)) }}
                             </p>
-                            <a target="" :href="opt.href" class="download_icon" download="">
-                                <img class="co-filter-color" src="assets/image/icon_download.png" alt="">
+                            <a target="" :href="opt.href||''" download="">
+                                <i class="i-ep-download text-48px c-[--ci-main-color] block" />
                             </a>
                         </div>
                     </li>
@@ -44,8 +44,8 @@
 </template>
 
 <script lang="ts" setup>
-import type{Link} from '@prisma/client'
-import {formatTime} from '@cooj/utils'
+import type { Link } from '@prisma/client'
+import { formatTime } from '@cooj/utils'
 const { $lang } = useNuxtApp()
 
 definePageMeta({
@@ -57,7 +57,7 @@ const typeList = ref({
     5: $lang('视频', 'Video'),
     6: $lang('软件', 'Software'),
 })
-const type = ref(2)
+const type = ref(4)
 
 // const { activeMenu, menuList } = useMenuState()
 const pageSize = ref(8)
@@ -70,18 +70,18 @@ const productData = reactive({
 })
 
 const initData = async () => {
-    const { data, error, refresh, execute } = await useCustomFetch<{  list: Link[], total: number  }>(`/api/v1/page/link`, {
+    const { data, error, refresh, execute } = await useCustomFetch<{ list: Link[], total: number }>(`/api/v1/page/link`, {
         method: 'GET',
         params: {
             isPage: 1,
             page: pg.value,
             pageSize: pageSize.value,
-            type: Number(type.value) || null,
+            type:Number(type.value) || null,
         },
     })
 
     if (error.value) return ElMessage.error('网络错误')
-
+    console.log(data.value)
     const list = data.value?.data.list || []
     // list.forEach((item) => {
     //     const node = item.links.find(opt => opt.type === 1)
@@ -104,10 +104,6 @@ const onHandleCurrentChange = () => {
     initData()
 }
 </script>
-
-<style>
-@import url('@/assets/css/download.css');
-</style>
 
 <style lang="scss" scoped>
 .goods-page {

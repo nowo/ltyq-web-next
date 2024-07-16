@@ -19,33 +19,33 @@ const {classifyList} = await useGoodsClassifyState()
 
 const setActiveMenu = (item: string) => {
     const href = activeMenu.value?.href
-
-    return href === item
-    // // if (href === item) {
-    // // }
-
-    // const route = useRoute()
-    // // const url = useRequestURL()
-
-    // const path = route.path
-    // // let path=url.pathname
-    // // const path = '/public/upload/product/2021/04-17/S-042KD.jpg'
-
-    // // 查找第一个斜杠的索引
-    // const firstSlashIndex = path.indexOf('/')
-    // let first = ''
-    // if (firstSlashIndex !== -1) {
-    //     // 截取第一个斜杠及其前面的内容
-    //     first = path.substring(0, firstSlashIndex + 1) // 包括斜杠
+    console.log(href,item)
+    // return href === item
+    // if (href === item) {
     // }
 
-    // if (path === item) {
-    //     return true
-    // } else if (item !== '/' && (path === `/${item}` || item === first)) {
-    //     return true
-    // } else {
-    //     return false
-    // }
+    const route = useRoute()
+    // const url = useRequestURL()
+
+    const path = route.path
+    // let path=url.pathname
+    // const path = '/public/upload/product/2021/04-17/S-042KD.jpg'
+
+    // 查找第一个斜杠的索引
+    const firstSlashIndex = path.indexOf('/')
+    let first = ''
+    if (firstSlashIndex !== -1) {
+        // 截取第一个斜杠及其前面的内容
+        first = path.substring(0, firstSlashIndex + 1) // 包括斜杠
+    }
+
+    if (path === item) {
+        return true
+    } else if (item !== '/' && (path === `/${item}` || item === first)) {
+        return true
+    } else {
+        return false
+    }
 }
 
 const setProductUrl = (type: number, id: number) => {
@@ -124,7 +124,7 @@ watch(() => route.path, () => {
                             <ul class="menu-ul">
                                 <li v-for="item in menuList" :key="item.id" :class="{'relative':!item.is_goods}">
                                     <NuxtLinkLocale :to="item.href" class="menu-btn"
-                                        :class="{ nav_active: setActiveMenu(item.href || '') }">
+                                        :class="{ active: setActiveMenu(item.href || '') }">
                                         {{ $lang(item.title, item.title_en) }}
                                     </NuxtLinkLocale>
 
@@ -178,17 +178,17 @@ watch(() => route.path, () => {
 
         <!-- 移动端顶部 -->
         <div class="mo-header">
-            <div class="h60px w40px flex items-center justify-center" @click="onToggleMenu(true)">
-                <i class="i-ep-list" />
+            <div class="h60px w50px flex items-center justify-center" @click="onToggleMenu(true)">
+                <i class="i-mdi-menu text-32px" />
             </div>
             <div class="mo-logo">
                 <NuxtLinkLocale to="/" :title="systemInfo?.company">
-                    <img :src="systemInfo?.logo2 || ''" :alt="systemInfo?.company" class="max-h60px">
+                    <img :src="systemInfo?.logo2 || ''" :alt="systemInfo?.company" class="max-h60px ma">
                 </NuxtLinkLocale>
             </div>
 
-            <div class="h60px w40px flex items-center justify-center" @click="onToggleSearch()">
-                <img class="co-filter-color" src="assets/image/icon_search.png" alt="">
+            <div class="h60px w50px flex items-center justify-center" @click="onToggleSearch()">
+                <i class="i-ep-search  text-24px c-[--ci-main-color]" />
             </div>
 
             <div class="mo-menu" :class="{ open: isOpen }" @click="onToggleMenu(false)">

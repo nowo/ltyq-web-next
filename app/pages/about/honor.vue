@@ -2,22 +2,19 @@
     <section>
         <CiSubMenu />
 
-        <div class="width_box certification_module mt30px!">
-            <div class="reuse_module">
+        <div class="container ma px10px">
+            <div class="py50px">
                 <ClientOnly>
-                    <p class="reuse_title">
+                    <h3 class="text-center text-32px font-bold">
                         {{ $lang(nowMenu?.title, nowMenu?.title_en) }}
-                    </p>
+                    </h3>
                 </ClientOnly>
-                <figure class="reuse_img">
-                    <img class="co-filter-color" src="assets/image/deco.png" alt="">
-                </figure>
+                <div class="line-icon">
+                </div>
             </div>
-            <ul class="certification_ul">
-                <!-- <li v-for="item in photo" :key="item.id" class="certification_li">
-                        <img :src="item?.img || ''" :alt="item?.title">
-                    </li> -->
-                <li v-for="(item, index) in photo" :key="item.id" class="certification_li">
+
+            <ul class="grid gap-30px mb60px min-h200px grid-cols-4 <lg:grid-cols-3 <md:grid-cols-2">
+                <li v-for="(item, index) in photoList" :key="item.id" class="certification_li">
                     <CoImage class="w100% pb137% block!" :src="item?.img || ''" :preview-src-list="srcList"
                         :initial-index="index" :alt="item?.title" />
                 </li>
@@ -27,14 +24,28 @@
 </template>
 
 <script lang="ts" setup>
+import type { Prisma, Link, Other } from '@prisma/client'
+
+const { $lang } = useNuxtApp()
 definePageMeta({
     layout: 'home',
 })
 
-const { data: photo } = await useCustomFetch<ISlideListResponse[]>('/api/page/get_about_link?type=6')
-const srcList = photo.value?.map(item => item.img)
+const { data: photo } = await useCustomFetch<{ list: Link[] }>('/api/v1/page/link?type=8')
+const srcList = photo.value?.data?.list?.map(item => item.img)
+const photoList = computed(() => {
+    let list = photo.value?.data.list || []
+    let end = list.filter((item) => item.img).map(item => {
+        return {
+            ...item,
+            img: item.img || '',
+            title: item.title || ''
+        }
+    })
+    return end
+})
 
-const { nowMenu } =await useMenuState()
+const { nowMenu } = await useMenuState()
 </script>
 
 <style lang="scss" scoped>

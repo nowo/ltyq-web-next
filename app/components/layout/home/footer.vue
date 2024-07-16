@@ -6,16 +6,20 @@
                     <h3 class="footer-tle">
                         {{ $lang('联系我们', 'Contact us') }}
                     </h3>
-                    <div class="text-item">
+                    <div v-if="systemInfo?.phone" class="text-item">
+                        <i class="i-ep-phone "></i>
                         {{ systemInfo?.phone }}
                     </div>
-                    <div class="text-item">
-                        {{ systemInfo?.phone2 }}
+                    <div v-if="systemInfo?.tel" class="text-item">
+                        <i class="i-ep-phone "></i>
+                        {{ systemInfo?.tel }}
                     </div>
                     <div class="text-item">
+                        <i class="i-ep-location-information "></i>
                         {{ $lang(systemInfo?.address, systemInfo?.address_en) }}
                     </div>
-                    <div class="text-item">
+                    <div v-if="systemInfo?.email" class="text-item">
+                        <i class="i-ep-message "></i>
                         {{ systemInfo?.email }}
                     </div>
                     <!-- <p style="padding-left: 1.5rem;">
@@ -43,7 +47,7 @@
                     </h3>
                     <div class="footer_link">
                         <div v-for="item in menuList" :key="item.id" class="text-item">
-                            <NuxtLinkLocale :to="item.href">
+                            <NuxtLinkLocale :to="item.href" class="hover:c-[#000]">
                                 {{ $lang(item.title, item.title_en) }}
                             </NuxtLinkLocale>
                         </div>
@@ -52,11 +56,11 @@
                 </div>
                 <div class="footer-img flex gap-30px">
                     <div class="footer-code">
-                        <CoImage class="w100% pb100% block" :src="systemInfo?.customCode" :icon-size="28" />
+                        <CoImage class="w100% pb100% block" :src="systemInfo?.wx_code" :icon-size="28" />
                         <span>{{ $lang('微信客服', 'WeChat customer service') }}</span>
                     </div>
                     <div class="footer-code">
-                        <CoImage class="w100% pb100%" :src="systemInfo?.qrCode" :icon-size="28" />
+                        <CoImage class="w100% pb100%" :src="systemInfo?.public_code" :icon-size="28" />
                         <span> {{ $lang('微信公众号', 'WeChat official account') }}</span>
                     </div>
                 </div>
@@ -65,21 +69,10 @@
                 <div class="c-#fff" v-html="$lang(systemInfo?.filing, systemInfo?.filing_en)" />
 
                 <div class="footer-icon">
-                    <NuxtLink v-for="item in links" :key="item.id" :to="item.href" target="_blank" class="footer_icon"
+                    <NuxtLink v-for="item in linkList" :key="item.id" :to="item.href||''" target="_blank" class="footer_icon"
                         :title="$lang(item.title, item.title_en) || ''">
-                        <img :src="item.img" class="max-h40px" :alt="$lang(item.title, item.title_en) || ''">
+                        <img :src="item.img||''" class="max-h35px" :alt="$lang(item.title, item.title_en) || ''">
                     </NuxtLink>
-                    <!-- <a target="" class="footer_icon"
-                            href="https://www.facebook.com/profile.php?id=100069614070466?lang=zh-Hans"><img
-                                src="assets/image/facebook.png" alt="Facebook"></a>
-                        <a target="" class="footer_icon" href=""><img src="assets/image/ins.png" alt="ins"></a>
-                        <a target="" class="footer_icon" href=""><img src="assets/image/linkdin.png" alt="linkdin"></a> -->
-
-                    <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share0.png" alt=""></a> -->
-                    <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share1.png" alt=""></a> -->
-                    <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share2.png" alt=""></a> -->
-                    <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share3.png" alt=""></a> -->
-                    <!--                    <a target="" class="footer_icon" href=""><img src="/template/home/static/img/public/icon_share4.png" alt=""></a> -->
                 </div>
             </div>
 
@@ -88,6 +81,7 @@
 </template>
 
 <script lang="ts" setup>
+import type{Link} from '@prisma/client'
 const { $lang } = useNuxtApp()
 const { systemInfo } = await useSystemState()
 
@@ -95,20 +89,22 @@ const { systemInfo } = await useSystemState()
 
 const { menuList } = await useMenuState()
 
-const qqLink = computed(() => {
-    if (systemInfo.value?.qq) {
-        return `http://wpa.qq.com/msgrd?v=3&uin=${systemInfo.value.qq}&site=qq&menu=yes`
-    } else {
-        return 'javascript:;'
-    }
-})
+// const qqLink = computed(() => {
+//     if (systemInfo.value?.qq) {
+//         return `http://wpa.qq.com/msgrd?v=3&uin=${systemInfo.value.qq}&site=qq&menu=yes`
+//     } else {
+//         return 'javascript:;'
+//     }
+// })
 
-const { data: links } = await useCustomFetch<ISlideListResponse[]>('/api/page/get_links', {
+const { data: links } = await useCustomFetch<{list:Link[]}>('/api/v1/page/link', {
     params: {
-        type: 8,
+        type: 7,
         isPage: 1,
     },
 })
+
+const linkList=links.value?.data.list||[]
 </script>
 
 <style lang="scss" scoped></style>

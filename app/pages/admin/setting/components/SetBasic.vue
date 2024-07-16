@@ -22,11 +22,13 @@ const form = reactive({
         welcome_en: '',
 
         phone: '', // 公司电话
+        tel: '', // 公司电话
         email: '', // 公司邮箱
 
         logo: [] as string[], // 网站logo
         logo2: [] as string[], // 网站logo
         qr_code: [] as string[], // 二维码
+        public_code: [] as string[], // 二维码
         seo_title: '', // seo标题
         seo_keyword: '', // 关键词
         seo_description: '', // 描述
@@ -61,7 +63,9 @@ const initDefaultData = async () => {
     form.data.logo = [propsData.logo || '']
     form.data.logo2 = [propsData.logo2 || '']
     form.data.qr_code = [propsData.wx_code || '']
+    form.data.public_code = [propsData.public_code || '']
     form.data.phone = propsData.phone || ''
+    form.data.tel = propsData.tel || ''
     form.data.email = propsData.email || ''
     form.data.seo_title = propsData.title || ''
     form.data.seo_keyword = propsData.keyword || ''
@@ -82,10 +86,12 @@ const onSubmit = async () => {
         welcome: form.data.welcome?.trim() ?? '',
         welcome_en: form.data.welcome_en?.trim() ?? '',
         phone: form.data.phone?.trim() ?? '',
+        tel: form.data.tel?.trim() ?? '',
         email: form.data.email?.trim() ?? '',
         logo: form.data.logo?.[0] ?? '',
         logo2: form.data.logo2?.[0] ?? '',
         wx_code: form.data.qr_code?.[0] ?? '',
+        public_code: form.data.public_code?.[0] ?? '',
         title: form.data.seo_title?.trim() ?? '',
         // title_en: '',
         keyword: form.data.seo_keyword?.trim() ?? '',
@@ -126,7 +132,8 @@ onBeforeMount(() => {
             <el-tab-pane label="中文" name="cn" />
             <el-tab-pane label="英文" name="en" />
         </el-tabs>
-        <el-row>
+        <div class="px10px">
+        <el-row :gutter="10">
             <template v-if="lang === 'cn'">
                 <el-col :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
                     <el-form-item prop="company" label="公司名称：">
@@ -163,10 +170,23 @@ onBeforeMount(() => {
                     </el-form-item>
                 </el-col>
             </template>
-
-            <el-col :xs="24" :sm="24" :md="18" :lg="12" :xl="10">
+            <div class="w100%"></div>
+            <el-col :xs="24" :sm="24" :md="12" :lg="9" :xl="7">
                 <el-form-item prop="phone" label="联系方式：">
                     <el-input v-model="form.data.phone" maxlength="50" clearable />
+                </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="12" :lg="9" :xl="7">
+                <el-form-item prop="tel" label="联系方式二：">
+                    <el-input v-model="form.data.tel" maxlength="50" clearable />
+                </el-form-item>
+            </el-col>
+            <div class="w100%"></div>
+            
+            <el-col :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
+                <el-form-item prop="email" label="电子邮箱：">
+                    <el-input v-model="form.data.email" maxlength="50"
+                        clearable />
                 </el-form-item>
             </el-col>
             <el-col v-if="lang === 'cn'" :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
@@ -179,33 +199,14 @@ onBeforeMount(() => {
                     <CoEditor v-model="form.data.filing_en" />
                 </el-form-item>
             </el-col>
-            <el-col :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
-                <el-form-item prop="seo_keyword" label="SEO关键字：">
-                    <el-input v-model="form.data.seo_keyword" maxlength="80" clearable />
-                </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
-                <el-form-item prop="seo_description" label="SEO描述：">
-                    <el-input v-model="form.data.seo_description" type="textarea" show-word-limit maxlength="150"
-                        clearable />
-                </el-form-item>
-            </el-col>
-            <el-col v-if="lang === 'cn'" :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
-                <el-form-item prop="filing" label="备案信息：">
-                    <!-- <BaseWangEditor v-model="form.data.filing" :height="310" /> -->
-                </el-form-item>
-            </el-col>
-            <el-col v-else-if="lang === 'en'" :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
-                <el-form-item prop="filing_en" label="英文备案信息：">
-                    <!-- <BaseWangEditor v-model="form.data.filing_en" :height="310" /> -->
-                </el-form-item>
-            </el-col>
+
+
             <el-col :xs="24" :sm="24" :md="20" :lg="18" :xl="16">
                 <div class="flex flex-wrap">
                     <el-form-item prop="logo" label="网站logo：" class="min-w200px">
                         <CoUploadPhoto v-model="form.data.logo" class="upload" />
                     </el-form-item>
-                    <el-form-item prop="logo2" label="网站logo2：" class="min-w200px">
+                    <el-form-item prop="logo2" label="移动端logo：" class="min-w200px">
                         <CoUploadPhoto v-model="form.data.logo2" class="upload" />
                     </el-form-item>
                     <el-form-item prop="icon" label="网站图标：" class="min-w200px">
@@ -217,6 +218,9 @@ onBeforeMount(() => {
                 <div class="flex flex-wrap">
                     <el-form-item prop="qr_code" label="二维码：" class="min-w200px">
                         <CoUploadPhoto v-model="form.data.qr_code" class="upload" />
+                    </el-form-item>
+                    <el-form-item prop="public_code" label="公众号：" class="min-w200px">
+                        <CoUploadPhoto v-model="form.data.public_code" class="upload" />
                     </el-form-item>
                 </div>
             </el-col>
@@ -239,6 +243,7 @@ onBeforeMount(() => {
                 </el-form-item>
             </el-col>
         </el-row>
+        </div>
     </el-form>
 </template>
 

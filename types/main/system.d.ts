@@ -24,6 +24,8 @@ declare interface ISystemInfoData {
     welcome: string //
     welcome_en: string //
     logo2: string
+    public_code:string
+    tel:string
 }
 /**
  * 修改系统信息请求参数
@@ -33,11 +35,13 @@ declare interface ISystemEditParams {
     logo: string // logo
     email: string // 邮箱
     phone: string // 联系电话
+    tel:string
     address: string // 地址
     title: string // 标题
     keyword: string // 关键字
     description: string // 描述
     wx_code: string // 二维码
+    public_code:string
     icon: string // 网站图标
     is_en: boolean // 是否开启英文
     filing: string // 备案信息

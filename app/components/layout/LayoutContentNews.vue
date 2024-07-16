@@ -17,7 +17,7 @@
                                 <h1 class="news-title">
                                     {{ $lang(item.title, item.title_en) }}
                                 </h1>
-                                <div class="news-icon">
+                                <div class="line-icon">
                                 </div>
                                 <div class="news-describe" v-html="$lang(item.describe, item.describe_en)">
                                 </div>
@@ -137,33 +137,6 @@ initTableData()
             transition: color 0.3s;
         }
 
-        .news-icon {
-            width: 8px;
-            height: 8px;
-            background-color: var(--ci-main-color);
-            border-radius: 50%;
-            margin: 10px;
-            position: relative;
-
-            &:before,
-            &:after {
-                content: '';
-                position: absolute;
-                width: 100px;
-                height: 1px;
-                background-color: var(--ci-main-color);
-                top: 50%;
-                transform: translateY(-50%)
-            }
-
-            &:before {
-                right: calc(100% + 30px);
-            }
-
-            &:after {
-                left: calc(100% + 30px);
-            }
-        }
 
         .news-describe {
             font-size: 14px;
@@ -185,7 +158,7 @@ initTableData()
             .news-title,.news-time,.news-describe {
                 color: var(--ci-white);
             }
-            .news-icon{
+            .line-icon{
                 background-color: var(--ci-white);
                 &:before,
                 &:after {

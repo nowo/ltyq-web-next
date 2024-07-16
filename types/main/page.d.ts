@@ -41,3 +41,25 @@ declare interface GoodsListParamsQuery {
 
 
 
+declare type IOtherType = 'about' | 'organization' | 'culture' | 'recruit-person' | 'recruit-notice' | 'recruit-cultivate' | 'service-mend' | 'message'
+
+
+/**
+ * 修改关于我们、联系我们 - 请求参数
+ */
+declare interface IOtherInfoUpdate {
+
+    // id?: number,
+    title?: string,  // 标题
+    title_en?: string,  // 标题
+    subtitle?: string,  // 标题
+    subtitle_en?: string,  // 标题
+    img: string; // 图片地址
+
+    content: string; // 内容
+    content_en: string; // 内容
+
+    // type: number | string;    // 类型 1:关于我们，2：联系我们
+    key?: string
+
+}

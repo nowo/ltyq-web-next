@@ -1,38 +1,38 @@
 <template>
     <section>
         <CiSubMenu />
-        <!-- 文章 -->
-        <article class="width_box article_module">
-            <div class="article_content">
-                <h1 class="article_title mb10px font-bold">
-                    {{ $lang(data?.title, data?.title_en) }}
+                <!-- 文章 -->
+                <article class="container ma px10px flex py65px">
+            <div class="w50%">
+                <h1 class="text-28px c-[--ci-main-color] mb10px font-bold">
+                    {{ $lang(comData?.title, comData?.title_en) }}
                 </h1>
                 <!-- <p class="article_subhead">
                     All rivers run into sea, is the use
                 </p> -->
-                <div class="article_text" v-html="$lang(data?.content, data?.content_en)" />
+                <div class="text-16px" v-html="$lang(comData?.content, comData?.content_en)" />
             </div>
-            <figure class="article_img">
-                <img :src="data?.img || ''" alt="">
+            <figure class="w50% pl100px">
+                <img :src="comData?.img || ''" alt="">
             </figure>
         </article>
     </section>
 </template>
 
 <script lang="ts" setup>
-import type { Prisma } from '@prisma/client'
-
+import type { Other } from '@prisma/client'
+const { $lang } = useNuxtApp()
 definePageMeta({
     layout: 'home',
 })
 
-const { data } = await useCustomFetch<Prisma.OtherMaxAggregateOutputType>('/api/page/other', {
+const { data } = await useCustomFetch<Other>('/api/v1/page/other', {
     params: {
         type: 'recruit-notice',
     },
 })
+const comData = data.value?.data
 </script>
 
 <style lang="scss" scoped>
-@import url('@/assets/css/recruit.css');
 </style>
