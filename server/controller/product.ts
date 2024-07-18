@@ -7,7 +7,7 @@ import { findClassifyIds } from './classify'
 export const getProductList = defineEventHandler(async (event) => {
     // // 接口校验(是否登录)
     // if (!event.context.user) return ResponseMessage.token
-    console.log(event)
+    // console.log(event)
     // 获取参数
     const param = await getEventParams<Prisma.ProductCreateInput & IListPage & { pid?: number }>(event)
 
@@ -44,7 +44,7 @@ export const getProductList = defineEventHandler(async (event) => {
         pageSize = Number(param.pageSize) || 20
         pageSkip = pageSize * (page - 1) || 0
     }
-    console.log('where :>> ', where);
+    // console.log('where :>> ', where);
     const [res1, res2] = await Promise.all([
         event.context.prisma.product.findMany({
             skip: pageSkip,
@@ -73,7 +73,7 @@ export const getProductList = defineEventHandler(async (event) => {
             where,
         }),
     ])
-    console.log('res1 :>> ', res1);
+    // console.log('res1 :>> ', res1);
     if (res1) {
         return { code: 200, data: { list: res1, total: res2 } }
     } else {

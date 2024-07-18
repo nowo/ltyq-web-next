@@ -115,9 +115,9 @@ const { data } = await useCustomFetch<Record<'nextNews' | 'prevNews' | 'data', I
 if (!data.value) {
     showErrorPage()
 }
-console.log(data.value)
+// console.log(data.value)
 const product = data.value?.data.data
-console.log(product)
+// console.log(product)
 // const photoList = []
 const photoList = computed(() => product?.links?.filter(item => item.type === 2) || [])
 const downloadList = computed(() => product?.links?.filter(item => item.type === 3) || [])

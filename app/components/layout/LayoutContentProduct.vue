@@ -65,7 +65,7 @@ const initData = async () => {
             status: true
         },
     })
-    console.log(data, error.value)
+    // console.log(data, error.value)
     if (error.value) return ElMessage.error('网络错误')
 
     const list = data.value?.data.list || []

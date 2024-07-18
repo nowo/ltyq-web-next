@@ -8,7 +8,7 @@ import type { H3Event } from 'h3'
 export const getIndexData =defineEventHandler( async event => {
     // 获取参数
     // const param = await getEventParams<{ id: number }>(event)
-
+    console.log('event.context.prisma',event.context.prisma)
     // if (!param?.id) return null
     // 推荐商品\商品分类、商品\新闻和风采
     const [res1, res2] = await Promise.all([

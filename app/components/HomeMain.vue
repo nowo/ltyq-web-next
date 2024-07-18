@@ -130,7 +130,7 @@ const breakpoints = ref({
 })
 
 const { data } = await useCustomFetch<{ productList: IGoodsGetListItem[], newsList: News[] }>('/api/v1/page/index')
-console.log(data.value)
+// console.log(data.value)
 // const productList = computed(() => data.value?.productList || [])
 // const newsList = computed(() => data.value?.newsList || [])
 

@@ -111,7 +111,7 @@ const onUploadSuccess: UploadProps['onSuccess'] = async (response, file, files) 
     files.forEach((item) => {
         // 只取携带response的才是刚上传的
         const resData = item.response as { code: number, data: { src: string }, msg: string }
-        console.log(resData)
+        // console.log(resData)
         if (resData) {
             if (resData.code === 200) { // 成功上传
                 item.url = resData.data.src

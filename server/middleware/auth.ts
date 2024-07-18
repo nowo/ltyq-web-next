@@ -20,10 +20,13 @@ export default eventHandler(async (event) => {
     const url = getRequestURL(event)
     // api接口才进行验证
     if (url.pathname.includes('/api/')) {
-        const authSign = await useVerifySign(event)
-        if (!authSign) {
-            throw createError({ message: '签名错误', statusCode: 1001 })
+        if (!url.pathname.includes('/api/v1/testing')) {
+            const authSign = await useVerifySign(event)
+            if (!authSign) {
+                throw createError({ message: '签名错误', statusCode: 1001 })
+            }
         }
+
         const authToken = await useVerifyToken(event)
         event.context.user = authToken
     }

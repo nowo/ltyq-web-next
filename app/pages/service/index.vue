@@ -81,7 +81,7 @@ const initData = async () => {
     })
 
     if (error.value) return ElMessage.error('网络错误')
-    console.log(data.value)
+    // console.log(data.value)
     const list = data.value?.data.list || []
     // list.forEach((item) => {
     //     const node = item.links.find(opt => opt.type === 1)

@@ -171,7 +171,7 @@ const onCancel = () => {
 const [ApiFunc, btnLoading] = useLoadingSubmit()
 // 确定
 const onConfirm = useThrottleFn(async () => {
-    console.log(form.data.type)
+
     const isVerify = await useFormVerify(formRef.value)
     if (!isVerify) return
 

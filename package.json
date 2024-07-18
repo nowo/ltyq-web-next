@@ -77,8 +77,5 @@
         "*.{js,jsx,ts,tsx}": [
             "eslint --fix"
         ]
-    },
-    "prisma": {
-        "schema": "server/prisma/schema.prisma"
     }
 }

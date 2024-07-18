@@ -41,7 +41,7 @@ const initDefaultData = async () => {
         body: { type: props.type },
     })
 
-    console.log('res :>> ', res)
+    // console.log('res :>> ', res)
     if (res.code !== 200) return ElMessage.error('网络错误')
     const propsData = res.data
 
