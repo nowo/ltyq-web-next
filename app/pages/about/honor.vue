@@ -49,5 +49,5 @@ const { nowMenu } = await useMenuState()
 </script>
 
 <style lang="scss" scoped>
-@import url('@/assets/css/about.css');
+
 </style>
