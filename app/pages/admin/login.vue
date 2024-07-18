@@ -188,9 +188,9 @@ const state = reactive({
 })
 
 const form = reactive({
-    account: 'admin',
-    password: '123',
-    code: '',
+    account: '',
+    password: '',
+    code: '0',
 })
 
 const rules = reactive<FormRules>({
@@ -258,7 +258,7 @@ const onSignIn = async () => {
                             </template>
                         </el-input>
                     </el-form-item>
-                    <el-form-item prop="code">
+                    <el-form-item v-if="0" prop="code">
                         <el-col :span="15">
                             <el-input v-model.trim="form.code" type="text" maxlength="4" placeholder="请输入验证码" clearable
                                 tabindex="3" @keyup.enter="onSignIn">
