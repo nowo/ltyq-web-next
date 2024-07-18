@@ -107,7 +107,7 @@
 
 <script lang="ts" setup>
 import type { Product, News } from '@prisma/client'
-import { formatTime } from '@cooj/utils'
+// import { formatTime } from '@cooj/utils'
 const { $lang } = useNuxtApp()
 
 const breakpoints = ref({
