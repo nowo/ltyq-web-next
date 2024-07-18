@@ -16,7 +16,7 @@
                         <!-- <img src="static/picture/厂房效果图.jpg"> -->
                         <img :src="comData?.img || ''">
                     </figure>
-                    <h1 class="about_title font-bold">
+                    <h1 class="about_title font-bold mb10px text-18px">
                         {{ $lang(systemInfo?.company, systemInfo?.company_en) }}
                     </h1>
                     <div class="about_content" v-html="$lang(comData?.content, comData?.content_en)" />
@@ -77,7 +77,6 @@ const photoList = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-// @import url('@/assets/css/about.css');
 .about-img {
     width: 32.875rem;
     float: left;
@@ -120,5 +119,16 @@ const photoList = computed(() => {
     }
 
 
+}
+
+@media screen and (max-width: 768px) {
+    .about-img {
+        width: 100%;
+        float: none;
+        margin: 0 0 3rem 0;
+    }
+    .about-banner{
+        padding: 35px 0;
+    }
 }
 </style>

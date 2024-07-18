@@ -1,5 +1,5 @@
 <template>
-    <div class="goods-classify container ma relative z-10 px30px! <md:px20px!">
+    <div class="goods-classify container ma relative z-10 px30px!">
         <div class="overflow-x-clip">
             <!-- :slides-per-view="5" -->
             <Swiper class="" :modules="[SwiperAutoplay, SwiperEffectCreative, SwiperNavigation, SwiperPagination]"
@@ -13,7 +13,7 @@
                     :class="setClassifyName(item.id)">
                     <NuxtLinkLocale class="type_name line-clamp-1"
                         :to="linkGoodsListUrl({ query: { cid: item.id, page: 1 }, relate: false, url: true })">
-                        {{ $lang(item.title, item.title_en) }}
+                        <span class="line-clamp-1">{{ $lang(item.title, item.title_en) }}</span>
                         <i v-if="item.children?.length" class=" i-ep-caret-bottom text-24px" />
                     </NuxtLinkLocale>
                     <ul v-if="item.children?.length" class="sub-item">
@@ -40,6 +40,7 @@
 //     // <eventName>: <expected arguments>
 //     change: []
 // }>()
+const { $lang } = useNuxtApp()
 
 const props = defineProps<{
     id?: number
@@ -165,7 +166,7 @@ watch(() => route.query.cid, (val) => {
 
     @media screen and (max-width: 768px) {
         --swiper-navigation-size: 18px;
-        --swiper-navigation-sides-offset: 0px;
+        --swiper-navigation-sides-offset: 10px;
     }
 
     :deep(.swiper) {

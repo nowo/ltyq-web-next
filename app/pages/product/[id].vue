@@ -5,28 +5,28 @@
         <div class="container ma px10px">
             <!-- 商品详情 -->
             <div class="flex py45px <lg:flex-wrap">
-                <div class="w50%">
+                <div class="w50% <md:w100%">
                     <ClientOnly>
-                    <Swiper :thumbs="{ swiper: thumbsSwiper }" :modules="modules" class="gallery-top">
-                        <SwiperSlide v-for="item in photoList" :key="item.id">
-                            <CoImage class="w100% pb100% block!" :src="item.img" />
-                        </SwiperSlide>
-                    </Swiper>
-                    <div class="gallery-base">
-                        <div class="swiper-button-prev goods_btn goods_btn-left" />
-                        <Swiper :space-between="10" :slides-per-view="4" :free-mode="true" :watch-slides-progress="true"
-                            :modules="modules" :navigation="navigation" class="gallery-thumbs"
-                            @swiper="setThumbsSwiper">
+                        <Swiper :thumbs="{ swiper: thumbsSwiper }" :modules="modules" class="gallery-top">
                             <SwiperSlide v-for="item in photoList" :key="item.id">
                                 <CoImage class="w100% pb100% block!" :src="item.img" />
-                                <!-- <img src="https://swiperjs.com/demos/images/nature-1.jpg"> -->
                             </SwiperSlide>
                         </Swiper>
-                        <div class="swiper-button-next goods_btn goods_btn-right" />
-                    </div>
+                        <div class="gallery-base">
+                            <div class="swiper-button-prev goods_btn goods_btn-left" />
+                            <Swiper :space-between="10" :slides-per-view="4" :free-mode="true"
+                                :watch-slides-progress="true" :modules="modules" :navigation="navigation"
+                                class="gallery-thumbs" @swiper="setThumbsSwiper">
+                                <SwiperSlide v-for="item in photoList" :key="item.id">
+                                    <CoImage class="w100% pb100% block!" :src="item.img" />
+                                    <!-- <img src="https://swiperjs.com/demos/images/nature-1.jpg"> -->
+                                </SwiperSlide>
+                            </Swiper>
+                            <div class="swiper-button-next goods_btn goods_btn-right" />
+                        </div>
                     </ClientOnly>
                 </div>
-                <div class="w50% pl40px">
+                <div class="w50% pl40px  <md:w100%  <md:pl0 <md:pt20px">
                     <h1 class="goods-name">
                         {{ $lang(product?.title, product?.title_en) }}
                         <CiClassifyName :item="product?.classify" />
@@ -139,11 +139,11 @@ const contentData = computed(() => {
             title: $lang('包装附件', 'Packaging accessories'),
             content: $lang(product?.annex, product?.annex_en),
         },
-        {
-            key: 4,
-            title: $lang('下载', 'File Download'),
-            content: '',
-        },
+        // {
+        //     key: 4,
+        //     title: $lang('下载', 'File Download'),
+        //     content: '',
+        // },
     ]
 })
 useHead({
@@ -302,6 +302,35 @@ useHead({
             * {
                 max-width: 100% !important;
             }
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .gallery-base{
+        --next-prev-width:30px;
+        --swiper-navigation-size: 24px;
+    
+    .gallery-thumbs {
+        width: calc(100% - var(--next-prev-width) - var(--next-prev-width) - 20px);
+    }
+
+    .goods_btn {
+        width: var(--next-prev-width);
+}
+    }
+
+    .tab-btn {
+        flex-wrap: wrap;
+        gap: 15px;
+
+        >a {
+            width: 100%;
+            clip-path: polygon(0 0, calc(100% - var(--pad-width)) 0, 100% 100%, 0 100%);
+        }
+
+        .cols-line {
+            display: none;
         }
     }
 }

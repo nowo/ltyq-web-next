@@ -9,6 +9,7 @@
 </template>
 
 <script lang="ts" setup>
+const { $lang } = useNuxtApp()
 defineProps<{
     item?: IClassifyListParent
 }>()

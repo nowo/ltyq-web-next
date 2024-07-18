@@ -3,9 +3,9 @@
         <CiSubMenu />
 
         <div class="container ma px10px">
-            <div class="py50px">
+            <div class="py50px  <md:py35px">
                 <ClientOnly>
-                    <h3 class="text-center text-32px font-bold">
+                    <h3 class="text-center text-32px  <md:text-28px">
                         {{ $lang(nowMenu?.title, nowMenu?.title_en) }}
                     </h3>
                 </ClientOnly>

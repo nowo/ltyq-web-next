@@ -24,6 +24,9 @@
 </template>
 
 <script lang="ts" setup>
+
+const { $lang } = useNuxtApp()
+
 const props = defineProps<{
     type: number
 }>()

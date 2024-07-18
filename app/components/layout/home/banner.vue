@@ -20,13 +20,13 @@
 
             <template v-else>
                 <!-- banner图 -->
-                <div class="banner_img">
+                <div class="banner_img min-h-50px">
                     <img :src="activeMenu?.img || ''" class="w100%" alt="">
                 </div>
 
                 <!-- 面包屑 -->
                 <div class="container ma px10px">
-                    <nav class="flex justify-end py30px">
+                    <nav class="flex justify-end py30px <md:py20px">
                         <!-- {{ $lang('当前位置', 'Location') }}： -->
                         <ClientOnly>
                             <el-breadcrumb :separator-icon="ArrowRight" class="bread-box">

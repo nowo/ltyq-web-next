@@ -1,6 +1,6 @@
 <template>
     <footer class="footer">
-        <div class="container ma c-[--ci-white]">
+        <div class="container ma px15px c-[--ci-white]">
             <div class="footer-top">
                 <div class="footer-contact">
                     <h3 class="footer-tle">

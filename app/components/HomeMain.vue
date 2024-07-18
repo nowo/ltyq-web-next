@@ -2,8 +2,8 @@
     <section class="sec-index">
         <!-- 热门推荐 -->
         <div class="container ma px10px">
-            <div class="py50px">
-                <h3 class="text-center text-36px">
+            <div class="py50px <md:py35px <md:pb0px">
+                <h3 class="text-center text-36px <md:text-32px">
                     {{ $lang('热门产品', 'Hot Product') }}
                 </h3>
                 <div class="line-icon">
@@ -13,7 +13,7 @@
             <div class="min-h-300px">
                 <Swiper :modules="[SwiperAutoplay, SwiperEffectCreative, SwiperNavigation, SwiperPagination]"
                     :slides-per-view="1" :space-between="10" :loop="true"
-                    :autoplay="{ delay: 8000, disableOnInteraction: true }" :breakpoints="breakpoints" class="py50px">
+                    :autoplay="{ delay: 8000, disableOnInteraction: true }" :breakpoints="breakpoints" class="py50px  <md:py40px <md:px10px">
                     <SwiperSlide v-for="item in productList" :key="item.id"
                         class="swiper-item w100% bg-#fff b-1px b-#ddd text-center">
                         <NuxtLinkLocale :to="`/product/${item.id}`" class="banner-link">
@@ -29,13 +29,11 @@
                     </SwiperSlide>
                 </Swiper>
             </div>
-            <!-- class="hot_more" -->
             <div class="text-center mb50px">
                 <NuxtLinkLocale to="/product">
                     <el-button class="min-w150px" type="primary" round size="large">
                         {{ $lang('查看更多', 'Read More') }} >>
                     </el-button>
-
                 </NuxtLinkLocale>
             </div>
         </div>
@@ -45,45 +43,52 @@
         <div class="sec-news min-h-500px relative">
             <div class="absolute top-0 left-0 w100% h100% bg-#000c opacity-50"></div>
             <div class="container ma px10px relative z-10">
-                <div class="py50px">
-                    <h3 class="text-center text-36px c-#fff">
+                <div class="py50px <md:py35px">
+                    <h3 class="text-center text-36px <md:text-32px c-#fff">
                         {{ $lang('热门产品', 'Hot Product') }}
                     </h3>
                     <div class="line-icon"> </div>
                 </div>
                 <div class="min-h100px">
-                    <div v-if="newsList.length" class="flex">
-                        <NuxtLinkLocale :to="`/news/${newsList?.[0]?.id}`" class="news-left">
-                            <figure class="news_img">
-                                <img :src="newsList?.[0]?.img || ''" alt="">
-                            </figure>
+                    <div v-if="newsList.length" class="flex justify-between gap-40px flex-wrap">
+                        <NuxtLinkLocale :to="`/news/${newsList?.[0]?.id}`" class="news-left news-a">
+                            <CoImage class="news-img block! w100% pb75% mb25px" fit="cover"
+                                :src="newsList?.[0]?.img || ''" alt="" />
                             <div class="news_txt flex justify-between">
-                                <div class="news_title">
-                                    <h2 class="font-bold">
+                                <div class="news-title flex-1">
+                                    <h2 class="news-tle">
                                         {{ $lang(newsList?.[0]?.title, newsList?.[0]?.title_en) }}
                                     </h2>
-                                    <div v-html="$lang(newsList?.[0]?.describe, newsList?.[0]?.describe_en)"></div>
+                                    <div class="news-desc"
+                                        v-html="$lang(newsList?.[0]?.describe, newsList?.[0]?.describe_en)"></div>
                                 </div>
-                                <div class="news_date">
-                                    <strong>{{ formatTime(newsList[0]?.createdAt, 'dd') }}</strong>
-                                    <span>{{ formatTime(newsList[0]?.createdAt, 'YYYY-mm') }}</span>
+                                <div class="news-date">
+                                    <strong class="text-48px lh-48px">{{ formatTime(newsList[0]?.createdAt, 'dd')
+                                        }}</strong>
+                                    <p>{{ formatTime(newsList[0]?.createdAt, 'YYYY-mm') }}</p>
                                 </div>
                             </div>
                         </NuxtLinkLocale>
                         <div class="news-right">
-                            <NuxtLinkLocale v-for="item in newsList.slice(1)" :key="item.id" :to="`/news/${item.id}`"
-                                class="news_list">
-                                <div class="news_dates">
-                                    <strong>{{ formatTime(item.createdAt, 'dd') }}</strong>
-                                    <span>{{ formatTime(item.createdAt, 'YYYY-mm') }}</span>
-                                </div>
-                                <div class="news_headline">
-                                    <h2 class="font-bold">
-                                        {{ $lang(item.title, item.title_en) }}
-                                    </h2>
-                                    <div v-html="$lang(newsList?.[0]?.describe, newsList?.[0]?.describe_en)"></div>
-                                </div>
-                            </NuxtLinkLocale>
+                            <div class="news-grid">
+
+                                <!-- .slice(1) -->
+                                <NuxtLinkLocale v-for="item in newsList" :key="item.id" :to="`/news/${item.id}`"
+                                    class="news_list news-a flex flex-wrap">
+                                    <div class="news-date">
+                                        <strong class="text-42px lh-42px">{{ formatTime(item.createdAt, 'dd')
+                                            }}</strong>
+                                        <p>{{ formatTime(item.createdAt, 'YYYY-mm') }}</p>
+                                    </div>
+                                    <div class="news-title flex-1">
+                                        <h2 class="news-tle">
+                                            {{ $lang(item.title, item.title_en) }}
+                                        </h2>
+                                        <div class="news-desc"
+                                            v-html="$lang(newsList?.[0]?.describe, newsList?.[0]?.describe_en)"></div>
+                                    </div>
+                                </NuxtLinkLocale>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -151,7 +156,7 @@ const newsList = computed(() => data.value?.data.newsList || [])
 </script>
 
 <style lang="scss" scoped>
-@import url(~/assets/css/home.css);
+// @import url(~/assets/css/home.css);
 
 .swiper-item {
 
@@ -162,11 +167,122 @@ const newsList = computed(() => data.value?.data.newsList || [])
     }
 }
 
-.news-left{
-    width:60%;
+.news-left {
+    width: 55%;
 }
-.news-right{
-    width:40%;
-    padding-left: 5%;
+
+.news-right {
+    width: 45%;
+    padding-left: 3.5%;
+
+    .news-grid {
+        display: grid;
+        gap: 20px;
+        align-items: start;
+    }
+
+
+    .news-a {
+        .new-tle {
+            font-size: 22px;
+        }
+
+        .news-date {
+            width: 90px;
+            background-color: #b2b2b2;
+            margin-right: 15px;
+            margin-left: 0px;
+        }
+
+        .news-desc {
+            font-size: 14px;
+
+        }
+    }
+}
+
+.news-a {
+    color: #fff;
+    font-size: 16px;
+
+    .news-date {
+        width: 100px;
+        background-color: #b2b2b2;
+        margin-left: 10px;
+        padding: 10px 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .news-tle {
+        font-weight: 700;
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+
+
+    .news-desc {
+        display: -webkit-box;
+        font-size: 16px;
+        line-height: 1.5;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-box-orient: vertical;
+    }
+
+    &:hover {
+        .news-tle {
+            color: var(--ci-main-color);
+
+        }
+
+        .news-date {
+            background-color: var(--ci-main-color);
+            color: var(--ci-white)
+        }
+
+        :deep(.news-img) {
+            img {
+                transform: scale(1.1);
+                transition: transform .3s;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    .news-left {
+        width: 46%;
+    }
+
+    .news-right {
+        width: 46%;
+        padding-left: 0;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .news-left {
+        width: 100%;
+    }
+
+    .news-right {
+        width: 100%;
+    }
+    .news-a{
+        .news-date{
+            >strong{
+                font-size:32px;line-height:32px;
+            }
+        }
+        .news-tle{
+        font-size:18px;
+        margin-bottom:4px;
+    }
+    }
+
 }
 </style>
