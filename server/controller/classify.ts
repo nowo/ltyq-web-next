@@ -49,7 +49,7 @@ export const getClassifyList = defineEventHandler(async event => {
     }
 
     const [res1, res2] = await Promise.all([
-        prisma.classify.findMany({
+        event.context.prisma.classify.findMany({
             skip: pageSkip,
             take: pageSize,
             where,
@@ -65,7 +65,7 @@ export const getClassifyList = defineEventHandler(async event => {
             //     account: true,
             // },
         }),
-        prisma.classify.count({
+        event.context.prisma.classify.count({
             where,
         }),
     ])
@@ -91,7 +91,7 @@ export const setClassifyCreate = defineEventHandler(async event => {
 
     if (!param?.title) return { msg: '标题不能为空' }
 
-    const res = await prisma.classify.create({
+    const res = await event.context.prisma.classify.create({
         data: { ...param },
     })
 
@@ -119,7 +119,7 @@ export const setClassifyUpdate = defineEventHandler(async event => {
 
     // return param
 
-    const res = await prisma.classify.update({
+    const res = await event.context.prisma.classify.update({
         data: param,
         where: {
             id: param.id,
@@ -147,7 +147,7 @@ export const setClassifyDelete = defineEventHandler(async event => {
 
     if (!param?.id) return { msg: '缺少参数id' }
 
-    const res = await prisma.classify.delete({
+    const res = await event.context.prisma.classify.delete({
         where: {
             id: param.id,
         },
@@ -167,7 +167,7 @@ export const setClassifyDelete = defineEventHandler(async event => {
  * @returns number[]
  */
 export async function findClassifyIds(categoryId: number): Promise<number[]> {
-    const categories = await prisma.classify.findMany({
+    const categories = await event.context.prisma.classify.findMany({
         where: {
             p_id: categoryId,
         },

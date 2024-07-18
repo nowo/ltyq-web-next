@@ -10,7 +10,7 @@ export const setLoginSign = defineEventHandler(async (event) => {
     if (!param?.account) return { msg: '请输入登录账号' }
     if (!param?.password) return { msg: '请输入登录密码' }
 
-    const user = await prisma.admin.findUnique({
+    const user = await event.context.prisma.admin.findUnique({
         where: {
             status: 1, // 1：启用
             account: param.account,
@@ -21,7 +21,7 @@ export const setLoginSign = defineEventHandler(async (event) => {
     // console.log('user', user)
     // // 密码变更
     // if (user) {
-    //     await prisma.admin.update({
+    //     await event.context.prisma.admin.update({
     //         data: {
     //             password: setEncryptPassword(param.password.trim()),
     //         },
@@ -80,7 +80,7 @@ export const setRegister = defineEventHandler(async (event) => {
     if (!password) return { msg: '请输入登录密码' }
     // TODO 可以进行密码强度校验
 
-    const user = await prisma.admin.create({
+    const user = await event.context.prisma.admin.create({
         data: {
             username,
             account,
@@ -113,7 +113,7 @@ export const setPasswordUpdate = defineEventHandler(async (event) => {
     if (!password) return { msg: '请输入登录密码' }
 
     // 查询原密码是否正确
-    const admin = await prisma.admin.findUnique({
+    const admin = await event.context.prisma.admin.findUnique({
         where: {
             id: userInfo.id,
             password: setEncryptPassword(password),
@@ -123,7 +123,7 @@ export const setPasswordUpdate = defineEventHandler(async (event) => {
     if (password === newPassword) return { msg: '新密码不能与原密码相同' }
 
     // 修改密码
-    const user = await prisma.admin.update({
+    const user = await event.context.prisma.admin.update({
         data: {
             password: setEncryptPassword(newPassword),
         },
@@ -146,7 +146,7 @@ export const setPasswordUpdate = defineEventHandler(async (event) => {
 export const getAdminInfo = defineEventHandler(async (event) => {
     const userInfo = event.context.user
     if (!userInfo) return
-    const admin = await prisma.admin.findUnique({
+    const admin = await event.context.prisma.admin.findUnique({
         where: {
             id: userInfo.id,
         },
@@ -199,7 +199,7 @@ export const getAdminList = defineEventHandler(async (event) => {
     }
 
     const [res1, res2] = await Promise.all([
-        prisma.admin.findMany({
+        event.context.prisma.admin.findMany({
             skip: pageSkip,
             take: pageSize,
             where,
@@ -211,7 +211,7 @@ export const getAdminList = defineEventHandler(async (event) => {
             //     account: true,
             // },
         }),
-        prisma.admin.count({
+        event.context.prisma.admin.count({
             where,
         }),
     ])
@@ -242,7 +242,7 @@ export const setAdminCreate = defineEventHandler(async (event) => {
     if (!param?.username) return { msg: '请输入用户名称' }
     if (!param?.password) return { msg: '请输入登录密码' }
 
-    const user = await prisma.admin.create({
+    const user = await event.context.prisma.admin.create({
         data: {
             ...param,
             status: param.status ? param.status : 1,
@@ -269,7 +269,7 @@ export const setAdminUpdate = defineEventHandler(async (event) => {
 
     if (!param?.id) return { msg: '缺少参数id' }
 
-    const user = await prisma.admin.update({
+    const user = await event.context.prisma.admin.update({
         data: {
             ...param,
             status: param.status ? param.status : 1,
@@ -299,7 +299,7 @@ export const setAdminDelete = defineEventHandler(async (event) => {
 
     if (!param?.id) return { msg: '缺少参数id' }
 
-    const user = await prisma.admin.delete({
+    const user = await event.context.prisma.admin.delete({
         where: {
             id: param.id,
         },

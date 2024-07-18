@@ -17,7 +17,7 @@ export const getOtherInfo =defineEventHandler( async event => {
 
     if (!param?.type) return { msg: '不存在记录' }
 
-    const res = await prisma.other.findFirst({
+    const res = await event.context.prisma.other.findFirst({
         where: {
             key: param.type,
             // key: 'about',
@@ -50,7 +50,7 @@ export const setOtherUpdate =defineEventHandler( async event => {
         img: param?.img || '',
     }
 
-    const res = await prisma.other.upsert({
+    const res = await event.context.prisma.other.upsert({
         where: {
             key: param.key,
         },

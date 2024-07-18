@@ -35,7 +35,7 @@ export const getNewsList = defineEventHandler(async (event) => {
     }
 
     const [res1, res2] = await Promise.all([
-        prisma.news.findMany({
+        event.context.prisma.news.findMany({
             skip: pageSkip,
             take: pageSize,
             where,
@@ -52,7 +52,7 @@ export const getNewsList = defineEventHandler(async (event) => {
             //     account: true,
             // },
         }),
-        prisma.news.count({
+        event.context.prisma.news.count({
             where,
         }),
     ])
@@ -77,7 +77,7 @@ export const setNewsCreate = defineEventHandler(async (event) => {
     if (!param?.title) return { msg: '标题名称不能为空' }
     // if (!param.href) return { msg: '链接地址不能为空' }
 
-    const res = await prisma.news.create({
+    const res = await event.context.prisma.news.create({
         data: {
             ...param,
             status:!!param.status
@@ -105,7 +105,7 @@ export const setNewsUpdate = defineEventHandler(async (event) => {
     if (!param.title) return { msg: '标题名称不能为空' }
     // if (!param.href) return { msg: '链接地址不能为空' }
 
-    const res = await prisma.news.update({
+    const res = await event.context.prisma.news.update({
         data: {
             ...param,
             status:!!param.status
@@ -134,7 +134,7 @@ export const setNewsDelete = defineEventHandler(async (event) => {
 
     if (!param?.id) return { msg: '缺少参数id' }
 
-    const res = await prisma.news.delete({
+    const res = await event.context.prisma.news.delete({
         where: {
             id: param.id,
         },
@@ -159,7 +159,7 @@ export const getNewsInfo =defineEventHandler( async event=> {
     if (!param?.id) return null
     // if (!param?.type) return null
 
-    const res = await prisma.news.findUnique({
+    const res = await event.context.prisma.news.findUnique({
         where: {
             id: Number(param.id),
             // type: Number(param.type),
@@ -169,7 +169,7 @@ export const getNewsInfo =defineEventHandler( async event=> {
     if (!res) return null
     // 取得上一条、下一条记录、更新阅读量
     const [res1, res2] = await Promise.all([
-        prisma.news.findMany({ // lte 小于等于，使用倒序
+        event.context.prisma.news.findMany({ // lte 小于等于，使用倒序
             where: {
                 createdAt: {
                     lte: res.createdAt,
@@ -183,7 +183,7 @@ export const getNewsInfo =defineEventHandler( async event=> {
                 createdAt: 'desc', // 倒序排序
             },
         }),
-        prisma.news.findMany({ // gte 大于等于，使用正序
+        event.context.prisma.news.findMany({ // gte 大于等于，使用正序
             where: {
                 createdAt: {
                     gt: res.createdAt,
@@ -197,7 +197,7 @@ export const getNewsInfo =defineEventHandler( async event=> {
                 createdAt: 'asc', // 升序排序
             },
         }),
-        prisma.news.update({
+        event.context.prisma.news.update({
             where: {
                 id: res.id,
             },

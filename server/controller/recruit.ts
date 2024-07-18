@@ -48,7 +48,7 @@ export const getRecruitList = defineEventHandler(async event => {
     }
     // console.log('where :>> ', where)
     const [res1, res2] = await Promise.all([
-        prisma.recruit.findMany({
+        event.context.prisma.recruit.findMany({
             skip: pageSkip,
             take: pageSize,
             where,
@@ -73,7 +73,7 @@ export const getRecruitList = defineEventHandler(async event => {
             //     account: true,
             // },
         }),
-        prisma.recruit.count({
+        event.context.prisma.recruit.count({
             where,
         }),
     ])
@@ -99,7 +99,7 @@ export const setRecruitCreate = defineEventHandler(async event=> {
 
     if (!param?.title) return { msg: '名称不能为空' }
 
-    const res = await prisma.recruit.create({
+    const res = await event.context.prisma.recruit.create({
         data: {
             ...param,
         },
@@ -127,7 +127,7 @@ export const setRecruitUpdate = defineEventHandler(async event => {
     if (!param?.id) return { msg: '缺少参数id' }
     if (!param?.title) return { msg: '标题不能为空' }
 
-    const res = await prisma.recruit.update({
+    const res = await event.context.prisma.recruit.update({
         data: {
             ...param,
         },
@@ -157,7 +157,7 @@ export const setRecruitDelete =defineEventHandler( async event => {
 
     if (!param?.id) return { msg: '缺少参数id' }
 
-    const res = await prisma.recruit.delete({
+    const res = await event.context.prisma.recruit.delete({
         where: {
             id: param.id,
         },

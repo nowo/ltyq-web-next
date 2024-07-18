@@ -4,6 +4,48 @@ import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 useHead({
     title: appName,
 })
+
+const {systemInfo} = await useSystemState()
+
+// const runtimeConfig = useRuntimeConfig()
+// const HOST = runtimeConfig.public.upload.host
+const url = useRequestURL()
+console.log(url)
+useHead({
+    title: systemInfo.value?.title,
+    meta: [
+        { name: 'description', content: systemInfo.value?.description },
+        { name: 'keywords', content: systemInfo.value?.keyword },
+    ],
+    link: [
+        { rel: 'icon', href: systemInfo.value?.icon },
+    ],
+    script: [
+        {
+            type: 'application/ld+json',
+            innerHTML: JSON.stringify({
+                '@context': 'http://schema.org',
+                '@type': 'Organization',
+                'name': systemInfo.value?.company,
+                'url': url.host,
+                'logo': systemInfo.value?.logo,
+            }),
+        },
+        { innerHTML: 'var _hmt = _hmt || [];' },
+        // {
+        //     type: 'text/javascript',
+        //     src: baiduUrl,
+        //     // async: true,
+        //     // defer: true,
+        //     // crossorigin: 'anonymous',
+        //     // referrerpolicy: 'no-referrer-when-downgrade',
+        // },
+    ],
+    // bodyAttrs: {
+    //     class: 'test',
+    // },
+    // script: [{ innerHTML: 'console.log(\'Hello world\')' }],
+})
 </script>
 
 <template>

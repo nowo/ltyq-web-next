@@ -38,7 +38,7 @@ export const getMessageList = defineEventHandler( async event => {
     }
 
     const [res1, res2] = await Promise.all([
-        prisma.message.findMany({
+        event.context.prisma.message.findMany({
             skip: pageSkip,
             take: pageSize,
             where,
@@ -61,7 +61,7 @@ export const getMessageList = defineEventHandler( async event => {
             //     account: true,
             // },
         }),
-        prisma.message.count({
+        event.context.prisma.message.count({
             where,
         }),
     ])
@@ -93,7 +93,7 @@ export const setMessageCreate =defineEventHandler( async event => {
 
     if (!param?.title) return { msg: '名称不能为空' }
 
-    const res = await prisma.message.create({
+    const res = await event.context.prisma.message.create({
         data: param,
     })
 
@@ -119,7 +119,7 @@ export const setMessageUpdate =defineEventHandler( async event => {
     if (!param?.id) return { msg: '缺少参数id' }
     if (!param?.title) return { msg: '标题不能为空' }
 
-    const res = await prisma.message.update({
+    const res = await event.context.prisma.message.update({
         data: param,
         where: {
             id: param.id,
@@ -147,7 +147,7 @@ export const setMessageDelete =defineEventHandler( async event => {
 
     if (!param?.id) return { msg: '缺少参数id' }
 
-    const res = await prisma.message.delete({
+    const res = await event.context.prisma.message.delete({
         where: {
             id: param.id,
         },

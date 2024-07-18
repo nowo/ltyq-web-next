@@ -5,7 +5,7 @@ import type { GlobalComponents } from '@vue/runtime-core'
 // import type { GlobalComponents } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 import type { FormItemProps, InputProps, TableColumnCtx } from 'element-plus'
-import type { Menu, Classify, Link,Product } from '@prisma/client'
+import type { Menu, Classify, Link,Product,PrismaClient } from '@prisma/client'
 
 declare global {
     type ComponentInstance = {
@@ -119,7 +119,7 @@ declare module '#app' {
 
 declare module 'h3' {
     interface H3EventContext {
-        // prisma: PrismaClient
+        prisma: PrismaClient
         user?: ILoginUserInfo | false
     }
 }

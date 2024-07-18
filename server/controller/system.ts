@@ -12,14 +12,14 @@ export const getSystemInfo = defineEventHandler(async (event) => {
 
     // 获取参数
     // const param = await getEventParams<LoginDataType>(event)
-    //    const res=await prisma.system.findFirst()
+    //    const res=await event.context.prisma.system.findFirst()
     //    console.log(res)
     const p = getRequestURL(event)
     console.log(p)
 
     const [res1, res2] = await Promise.all([
-        prisma.system.findUnique({ where: { id: 1 } }),
-        prisma.system.findUnique({ where: { id: 2 } }),
+        event.context.prisma.system.findUnique({ where: { id: 1 } }),
+        event.context.prisma.system.findUnique({ where: { id: 2 } }),
     ])
     // console.timeEnd('timeout')
     if (res1 && res2) {
@@ -56,7 +56,7 @@ export const setSystemInfo = defineEventHandler(async (event) => {
     if (!param?.company) return { msg: '公司名称不能为空' }
 
     const [res1, res2] = await Promise.all([
-        prisma.system.update({
+        event.context.prisma.system.update({
             data: {
                 company: param.company,
                 title: param.title,
@@ -77,7 +77,7 @@ export const setSystemInfo = defineEventHandler(async (event) => {
             },
             where: { id: 1 },
         }),
-        prisma.system.update({
+        event.context.prisma.system.update({
             data: {
                 // title: param.title_en,
                 company: param.company_en,

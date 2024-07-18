@@ -12,7 +12,7 @@ export const getIndexData =defineEventHandler( async event => {
     // if (!param?.id) return null
     // 推荐商品\商品分类、商品\新闻和风采
     const [res1, res2] = await Promise.all([
-        prisma.product.findMany({
+        event.context.prisma.product.findMany({
             skip: 0,
             take: 20,
             where: {
@@ -41,7 +41,7 @@ export const getIndexData =defineEventHandler( async event => {
                 }
             ],
         }),
-        prisma.news.findMany({
+        event.context.prisma.news.findMany({
             skip: 0,
             take: 6,
             where: {

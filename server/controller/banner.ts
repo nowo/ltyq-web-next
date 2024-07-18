@@ -55,7 +55,7 @@ export const getBannerList = defineEventHandler(async event => {
     }
 
     const [res1, res2] = await Promise.all([
-        prisma.link.findMany({
+        event.context.prisma.link.findMany({
             skip: pageSkip,
             take: pageSize,
             where,
@@ -68,7 +68,7 @@ export const getBannerList = defineEventHandler(async event => {
             //     account: true,
             // },
         }),
-        prisma.link.count({
+        event.context.prisma.link.count({
             where,
         }),
     ])
@@ -100,7 +100,7 @@ export const setBannerCreate = defineEventHandler(async event => {
 
     if (!param?.title) return { msg: '标题不能为空' }
 
-    const res = await prisma.link.create({
+    const res = await event.context.prisma.link.create({
         data: param,
     })
 
@@ -126,7 +126,7 @@ export const setBannerUpdate = defineEventHandler(async event => {
     if (!param?.id) return { msg: '缺少参数id' }
     if (!param?.title) return { msg: '标题不能为空' }
 
-    const res = await prisma.link.update({
+    const res = await event.context.prisma.link.update({
         data: param,
         where: {
             id: param.id,
@@ -154,7 +154,7 @@ export const setBannerDelete = defineEventHandler(async event => {
 
     if (!param?.id) return { msg: '缺少参数id' }
 
-    const res = await prisma.link.delete({
+    const res = await event.context.prisma.link.delete({
         where: {
             id: param.id,
         },

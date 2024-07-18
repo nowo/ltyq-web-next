@@ -46,7 +46,7 @@ export const getProductList = defineEventHandler(async (event) => {
     }
     console.log('where :>> ', where);
     const [res1, res2] = await Promise.all([
-        prisma.product.findMany({
+        event.context.prisma.product.findMany({
             skip: pageSkip,
             take: pageSize,
             where,
@@ -69,7 +69,7 @@ export const getProductList = defineEventHandler(async (event) => {
             //     account: true,
             // },
         }),
-        prisma.product.count({
+        event.context.prisma.product.count({
             where,
         }),
     ])
@@ -91,7 +91,7 @@ export const getProductInfo = defineEventHandler(async (event) => {
 
     if (!param?.id) return null
 
-    const res = await prisma.product.findUnique({
+    const res = await event.context.prisma.product.findUnique({
         where: {
             id: Number(param.id),
             // type: Number(param.type),
@@ -109,7 +109,7 @@ export const getProductInfo = defineEventHandler(async (event) => {
     if (!res) return null
     // 取得上一条、下一条记录、更新阅读量
     // const [res1, res2] = await Promise.all([
-    //     prisma.product.findMany({ // lte 小于等于，使用倒序
+    //     event.context.prisma.product.findMany({ // lte 小于等于，使用倒序
     //         where: {
     //             createdAt: {
     //                 lte: res.createdAt,
@@ -123,7 +123,7 @@ export const getProductInfo = defineEventHandler(async (event) => {
     //             createdAt: 'desc', // 倒序排序
     //         },
     //     }),
-    //     prisma.product.findMany({ // gte 大于等于，使用正序
+    //     event.context.prisma.product.findMany({ // gte 大于等于，使用正序
     //         where: {
     //             createdAt: {
     //                 gt: res.createdAt,
@@ -137,7 +137,7 @@ export const getProductInfo = defineEventHandler(async (event) => {
     //             createdAt: 'asc', // 升序排序
     //         },
     //     }),
-    //     prisma.product.update({
+    //     event.context.prisma.product.update({
     //         where: {
     //             id: res.id,
     //         },
@@ -171,7 +171,7 @@ export const setProductCreate = defineEventHandler(async (event) => {
     if (!param?.title) return { msg: '标题名称不能为空' }
     // if (!param.href) return { msg: '链接地址不能为空' }
     let links = param.links as Prisma.LinkCreateManyProductInput[] || []
-    const res = await prisma.product.create({
+    const res = await event.context.prisma.product.create({
         data: {
             ...param,
             links: {
@@ -203,7 +203,7 @@ export const setProductUpdate = defineEventHandler(async (event) => {
     // if (!param.title) return { msg: '标题名称不能为空' }
     // // if (!param.href) return { msg: '链接地址不能为空' }
 
-    // const res = await prisma.product.update({
+    // const res = await event.context.prisma.product.update({
     //     data: param,
     //     where: {
     //         id: param.id,
@@ -215,7 +215,7 @@ export const setProductUpdate = defineEventHandler(async (event) => {
     if (!param?.id) return { msg: '缺少参数id' }
     if (!param?.title) return { msg: '标题不能为空' }
 
-    const links = await prisma.link.findMany({
+    const links = await event.context.prisma.link.findMany({
         where: {
             productId: param.id,
         },
@@ -231,7 +231,7 @@ export const setProductUpdate = defineEventHandler(async (event) => {
         })
         if (node) {
             updateIds.push(node.id)
-            await prisma.link.update({
+            await event.context.prisma.link.update({
                 where: {
                     id: node.id,
                 },
@@ -261,7 +261,7 @@ export const setProductUpdate = defineEventHandler(async (event) => {
     // console.log('param :>> ', param)
     // return { code: 200, msg: '修改成功', param }
 
-    const res = await prisma.product.update({
+    const res = await event.context.prisma.product.update({
         data: {
             ...param,
             links: {
@@ -297,7 +297,7 @@ export const setProductDelete = defineEventHandler(async (event) => {
 
     if (!param?.id) return { msg: '缺少参数id' }
 
-    const res = await prisma.product.delete({
+    const res = await event.context.prisma.product.delete({
         where: {
             id: param.id,
         },

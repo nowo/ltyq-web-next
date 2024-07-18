@@ -39,7 +39,7 @@ export const getMenuList = defineEventHandler(async (event) => {
     }
 
     const [res1, res2] = await Promise.all([
-        prisma.menu.findMany({
+        event.context.prisma.menu.findMany({
             skip: pageSkip,
             take: pageSize,
             where,
@@ -54,7 +54,7 @@ export const getMenuList = defineEventHandler(async (event) => {
             //     account: true,
             // },
         }),
-        prisma.menu.count({
+        event.context.prisma.menu.count({
             where,
         }),
     ])
@@ -79,7 +79,7 @@ export const setMenuCreate = defineEventHandler(async (event) => {
     if (!param?.title) return { msg: '菜单名称不能为空' }
     if (!param.href) return { msg: '链接地址不能为空' }
 
-    const res = await prisma.menu.create({
+    const res = await event.context.prisma.menu.create({
         data: param,
     })
 
@@ -104,7 +104,7 @@ export const setMenuUpdate = defineEventHandler(async (event) => {
     if (!param.title) return { msg: '菜单名称不能为空' }
     if (!param.href) return { msg: '链接地址不能为空' }
 
-    const res = await prisma.menu.update({
+    const res = await event.context.prisma.menu.update({
         data: param,
         where: {
             id: param.id,
@@ -130,7 +130,7 @@ export const setMenuDelete = defineEventHandler(async (event) => {
 
     if (!param?.id) return { msg: '缺少参数id' }
 
-    const res = await prisma.menu.delete({
+    const res = await event.context.prisma.menu.delete({
         where: {
             id: param.id,
         },
