@@ -80,7 +80,7 @@
 <script lang="ts" setup>
 import type { ThumbsOptions } from 'swiper/types'
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules'
-import { formatTime } from '@cooj/utils'
+// import { formatTime } from '@cooj/utils'
 
 definePageMeta({
     layout: 'home',

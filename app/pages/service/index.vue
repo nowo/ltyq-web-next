@@ -45,7 +45,7 @@
 
 <script lang="ts" setup>
 import type { Link } from '@prisma/client'
-import { formatTime } from '@cooj/utils'
+// import { formatTime } from '@cooj/utils'
 const { $lang } = useNuxtApp()
 
 definePageMeta({

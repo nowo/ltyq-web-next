@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import { formatTime } from '@cooj/utils'
+// import { formatTime } from '@cooj/utils'
 import type { News } from '@prisma/client'
 
 const props = defineProps<{

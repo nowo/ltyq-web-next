@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Menu } from '@prisma/client'
 import type { FormRules } from 'element-plus'
-import { filterTreeList } from '@cooj/utils'
+// import { filterTreeList } from '@cooj/utils'
 import MenuModal from './components/MenuModal.vue'
 
 definePageMeta({

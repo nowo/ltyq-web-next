@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Menu, Prisma } from '@prisma/client'
 import type { CheckboxValueType, FormInstance, FormRules } from 'element-plus'
-import { deepClone } from '@cooj/utils'
+// import { deepClone } from '@cooj/utils'
 
 const props = defineProps<{
     data: Prisma.MenuUncheckedCreateInput[]
