@@ -1,27 +1,51 @@
 import crypto from 'node:crypto'
 import type { H3Event } from 'h3'
-import * as jose from 'jose'
+// import * as jose from 'jose'
+import jwt from 'jsonwebtoken'
 import { setSignRule } from '~/utils/secret'
 
+// // 生成token
+// export const createToken = async (data: Record<string, any>) => {
+//     const secret = new TextEncoder().encode('cc7e0d44fd473002')
+//     const token = await new jose.SignJWT(data)
+//         .setProtectedHeader({ alg: 'HS256' })
+//         .sign(secret)
+//     return token
+// }
+
+// // 解析token
+// export const verifyToken = async <T>(token: string) => {
+//     try {
+//         const secret = new TextEncoder().encode('cc7e0d44fd473002')
+//         const { payload } = await jose.jwtVerify<T>(token, secret)
+//         return payload
+//     } catch (error) {
+//         return false
+//     }
+// }
+
+
 // 生成token
-export const createToken = async (data: Record<string, any>) => {
-    const secret = new TextEncoder().encode('cc7e0d44fd473002')
-    const token = await new jose.SignJWT(data)
-        .setProtectedHeader({ alg: 'HS256' })
-        .sign(secret)
+export const createToken = (data: Record<string, any>) => {
+    const token = jwt.sign(data, 'cc7e0d44fd473002',
+        // {
+        //     expiresIn: app.config.jwt.sign.expiresIn,
+        // },
+    )
     return token
 }
 
 // 解析token
-export const verifyToken = async <T>(token: string) => {
+export const verifyToken = <T>(token: string) => {
     try {
-        const secret = new TextEncoder().encode('cc7e0d44fd473002')
-        const { payload } = await jose.jwtVerify<T>(token, secret)
-        return payload
+        const data = jwt.verify(token, 'cc7e0d44fd473002') as T
+        console.log(data)
+        return jwt.verify(token, 'cc7e0d44fd473002') as T
     } catch (error) {
         return false
     }
 }
+
 
 /**
  * 创建哈希值

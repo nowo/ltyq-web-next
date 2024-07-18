@@ -59,7 +59,7 @@ const uploadList = ref<UploadUserFile[]>([])
 
 // props.modelValue处理，转成相应的数据内容
 const initData = () => {
-    console.log(propsAttr)
+    // console.log(propsAttr)
     const list = props.modelValue.filter(item => !!item).map((item) => {
         const dat: UploadUserFile = { name: item, url: item, status: 'success' }
         return dat
