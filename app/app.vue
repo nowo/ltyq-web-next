@@ -10,7 +10,6 @@ const {systemInfo} = await useSystemState()
 // const runtimeConfig = useRuntimeConfig()
 // const HOST = runtimeConfig.public.upload.host
 const url = useRequestURL()
-console.log(url)
 useHead({
     title: systemInfo.value?.title,
     meta: [
@@ -27,7 +26,7 @@ useHead({
                 '@context': 'http://schema.org',
                 '@type': 'Organization',
                 'name': systemInfo.value?.company,
-                'url': url.host,
+                'url': url.origin,
                 'logo': systemInfo.value?.logo,
             }),
         },

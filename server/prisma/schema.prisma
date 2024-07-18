@@ -1,5 +1,6 @@
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["relationJoins"]
     binaryTargets   = ["native", "rhel-openssl-1.0.x"]
 }
 
@@ -77,9 +78,9 @@ model News {
     sort        Int?    @default(0)
     type        Int     @default(0)
 
-    status Boolean? @default(false)
+    status  Boolean? @default(false)
     isIndex Boolean? @default(false)
-    read   Int?     @default(0)
+    read    Int?     @default(0)
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
@@ -143,9 +144,9 @@ model System {
     logo        String? @db.VarChar(255)
     logo2       String? @db.VarChar(255)
     wx_code     String? @db.VarChar(255)
-    public_code     String? @db.VarChar(255)
+    public_code String? @db.VarChar(255)
     phone       String? @db.VarChar(20)
-    tel       String? @db.VarChar(20)
+    tel         String? @db.VarChar(20)
     email       String? @db.VarChar(50)
 
     filing  String?  @db.Text
@@ -213,7 +214,7 @@ model Recruit {
     content     String?  @db.Text
     content_en  String?  @db.Text
     sort        Int?     @default(0)
-    status     Boolean? @default(true)
+    status      Boolean? @default(true)
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")

@@ -13,7 +13,7 @@ const emits = defineEmits<{
     update: []
 }>()
 
-const injectData = inject<{ title: string, type: number | string, key?: 'download' }>('propsData')
+const injectData = inject<{ title: string, type: number | string, item?: 'download' }>('propsData')
 
 const lang = ref<LanguageType>('cn')
 const visible = ref(false)
@@ -99,7 +99,7 @@ const openModal = (type: DialogOperate, row?: Link) => {
         form.data.isHot = false
         form.data.id = 0
 
-        form.data.type = injectData?.key === 'download' ? '4' : `${injectData!.type}`
+        form.data.type = injectData?.item === 'download' ? '4' : `${injectData!.type}`
         form.data.imgList = []
         form.data.hrefList = []
         form.data.href = ''
@@ -123,10 +123,10 @@ const onConfirm = useThrottleFn(async () => {
 
     let type = form.data.type
     if (!type) {
-        type = injectData?.key === 'download' ? '4' : `${injectData!.type}`
+        type = injectData?.item === 'download' ? '4' : `${injectData!.type}`
     }
     let href = form.data.hrefList[0] ?? ''
-    if (injectData?.key !== 'download') {
+    if (injectData?.item !== 'download') {
         href = form.data.href
     }
     const isVerify = await useFormVerify(formRef.value)
@@ -207,7 +207,7 @@ defineExpose({
             <el-form-item label="图片上传" prop="imgList">
                 <CoUploadPhoto v-model="form.data.imgList" />
             </el-form-item>
-            <template v-if="injectData?.key === 'download'">
+            <template v-if="injectData?.item === 'download'">
                 <el-form-item label="文件类型" prop="type">
                     <el-select v-model="form.data.type" filterable clearable>
                         <el-option v-for="(item, index) in props.list" :key="index" :label="item" :value="index" />

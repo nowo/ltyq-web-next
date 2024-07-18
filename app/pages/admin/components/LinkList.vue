@@ -7,7 +7,7 @@ import OperateModal from './LinkModal.vue'
 const props = defineProps<{
     type: number | string
     title: string
-    key?: 'download' | 'about'
+    item?: 'download' | 'about'
 }>()
 
 provide('propsData',props)
@@ -29,7 +29,7 @@ const stateData = reactive({
 
 const typeData = computed(() => {
     let dat: Record<string | number, string> = {}
-    if (props.key === 'download') {
+    if (props.item === 'download') {
         dat = {
             4: '文档',
             5: '视频',
@@ -57,7 +57,7 @@ const searchData = reactive<CoFormToolProps<FormSearchData>>({
     },
     config: [
         { column: { label: '标题名称', prop: 'title' }, placeholder: '', width: '160' },
-        { column: { label: '类型', prop: 'type' }, placeholder: '', width: '130',isHide: props.key !== 'download' },
+        { column: { label: '类型', prop: 'type' }, placeholder: '', width: '130',isHide: props.item !== 'download' },
         { column: { label: '状态', prop: 'state' }, placeholder: '', width: '100' },
         { column: { label: '日期范围', prop: 'time' } },
     ],
@@ -78,7 +78,7 @@ const tableData = reactive<CoTableProps<Link>>({
         { property: 'title_en', label: '英文标题名称', width: '180' },
         { property: 'img', label: '图片', width: '150', align: 'center' },
         { property: 'href', label: '链接地址', minWidth: '150' },
-        { property: 'type', label: '类型', width: '160', align: 'center', other: { isHide: props.key !== 'download' } },
+        { property: 'type', label: '类型', width: '160', align: 'center', other: { isHide: props.item !== 'download' } },
         // { property: 'status姓名', width: '180' },
         { property: 'status', label: '状态', align: 'center', width: '90' },
         { property: 'created_at', label: '创建时间', width: '220' },

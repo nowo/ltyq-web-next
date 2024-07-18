@@ -54,7 +54,7 @@ const activeName = ref('1')
             <template v-else-if="props.type === 'service'">
                 <el-tab-pane label="资料下载" name="1">
                     <el-scrollbar>
-                        <LinkList type="4,5,6" title="资料文件" />
+                        <LinkList type="4,5,6" title="资料文件" item="download" />
                     </el-scrollbar>
                 </el-tab-pane>
                 <el-tab-pane label="服务维修" name="2" lazy>

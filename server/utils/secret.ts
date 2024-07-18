@@ -39,7 +39,7 @@ export const createToken = (data: Record<string, any>) => {
 export const verifyToken = <T>(token: string) => {
     try {
         const data = jwt.verify(token, 'cc7e0d44fd473002') as T
-        console.log(data)
+        // console.log(data)
         return jwt.verify(token, 'cc7e0d44fd473002') as T
     } catch (error) {
         return false
